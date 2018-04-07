@@ -50,6 +50,9 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+#Joy added in
+.classpath
+.project
 
 # External tool builders
 .externalToolBuilders/
