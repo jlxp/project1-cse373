@@ -4,6 +4,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import datastructures.concrete.DoubleLinkedList;
+import datastructures.interfaces.IList;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -22,8 +25,13 @@ import static org.junit.Assert.assertTrue;
 public class TestDeleteFunctionality extends TestDoubleLinkedList {
     @Test(timeout=SECOND)
     public void testExample() {
-        // Feel free to modify or delete this dummy test.
-        assertTrue(true);
-        assertEquals(3, 3);
+        IList<String> list = new DoubleLinkedList<>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        
+        list.delete(1); 
+        assertListMatches(new String[] {"a", "c"}, list);
+        assertEquals(2, list.size());
     }
 }
