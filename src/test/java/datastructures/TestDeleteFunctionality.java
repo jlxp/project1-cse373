@@ -28,8 +28,9 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     public void basicTestDelete() {
         IList<String> list = makeBasicList();
         
-        list.delete(1); 
+        String temp = list.delete(1); 
         assertListMatches(new String[] {"a", "c"}, list);
+        assertEquals("b", temp); 
         assertEquals(2, list.size());
     }
     
@@ -37,8 +38,9 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     public void testDeleteOnFront() {
         IList<String> list = makeBasicList();
         
-        list.delete(0);
+        String temp = list.delete(0);
         assertListMatches(new String[] {"b", "c"}, list);
+        assertEquals("a", temp); 
         assertEquals(2, list.size());
     }
     

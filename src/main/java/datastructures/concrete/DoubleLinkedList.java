@@ -29,11 +29,11 @@ public class DoubleLinkedList<T> implements IList<T> {
 
     @Override
     public void add(T item) {
-        if(item == null) {
-            throw new IllegalArgumentException("Wrong Param");
+        if (item == null) {
+            throw new IllegalArgumentException("Parameter must not be null");
         }
         Node<T> temp = new Node<T>(item);
-        if(this.front == null || this.back == null) {
+        if (this.size == 0) {
             this.front = temp;
             this.back = this.front;
         } else {
@@ -46,11 +46,12 @@ public class DoubleLinkedList<T> implements IList<T> {
 
     @Override
     public T remove() {
-        if(this.front == null || this.back == null) {
+        if (this.size == 0) {
             throw new EmptyContainerException();
         }
         Node<T> temp = this.back; 
         if (this.back == this.front) {
+            this.front = null;
             this.back = null;
         } else {
             this.back = this.back.prev;
@@ -59,61 +60,61 @@ public class DoubleLinkedList<T> implements IList<T> {
         }
         this.size--;
         return temp.data;
-        
     }
-
-    @Override
-    public T get(int index) {
-        if(index < 0 || index >= this.size) {
+    
+    /*TODO: insert comment here*/
+    private void testIndexOutOfBounds(int index) {
+        if (index < 0 || index >= this.size) {
             throw new IndexOutOfBoundsException("Wrong Index");
         }
-        
-        if(index == 0) {
+    }
+    
+    /*TODO: insert comment here*/
+    private Node<T> findNode(Node<T> start, int index) {
+        int count = 0;
+        Node<T> current = start;
+        while (current.next != null && count < index) {
+            current = current.next;
+            count++;
+        }
+        return current;
+    }
+    
+    @Override
+    public T get(int index) {
+        testIndexOutOfBounds(index);
+        if (index == 0) {
             return this.front.data;
-        } else if(index == this.size -1 ) {
+        } else if (index == this.size -1) {
             return this.back.data;
         } else {
-            int count = 0;
-            Node<T> current = this.front;
-            while(current.next != null && count < index) {
-                current = current.next;
-                count++;
-            }
-            
-            return (T) current.data;
+            return findNode(this.front, index).data;
         }
     }
 
     @Override
     public void set(int index, T item) {
-        if(index < 0 || index >= this.size) {
-            throw new IndexOutOfBoundsException("Wrong Index");
-        }
+        testIndexOutOfBounds(index);
         
-        if(this.front.next == null) {
+        if (this.front.next == null) {
             this.front = new Node<T>(null, item, null);
         } else {
-            if(index == 0) {
-                Node<T> current = this.front;
-                Node<T> temp = new Node<T>(null, item,this.front.next);
+            Node<T> current = findNode(this.front, index);
+            Node<T> temp = new Node<T>(item);
+            if (index == 0) {
+                temp.next = current.next;
                 current.next.prev = temp;
                 current.next = null;
                 this.front = temp;
-                
-            } else if(index == this.size - 1) {
-                Node<T> current = this.back;
-                Node<T> temp = new Node<T>(this.back.prev,item,null);
+            } else if (index == this.size - 1) {
+                current = this.back;
+                temp.prev = this.back.prev;
                 current.prev.next = temp;
                 current.prev = null;
                 this.back = temp;
             } else {
-                int count = 0;
-                Node<T> current = this.front;
-                while(current.next != null && count < index) {
-                    current = current.next;
-                    count++;
-                }
-                Node<T> temp = new Node<T>(current.prev, item, current.next);
+                temp.prev = current.prev;
+                temp.next = current.next; 
                 current.prev.next = temp;
                 current.next.prev = temp;
                 current.prev = null;
@@ -124,33 +125,26 @@ public class DoubleLinkedList<T> implements IList<T> {
 
     @Override
     public void insert(int index, T item) {
-        if(index < 0 || index >= this.size + 1) {
+        if (index < 0 || index >= this.size + 1) {
             throw new IndexOutOfBoundsException("Wrong Index");
         }
         
-        if(this.front == null || index == this.size) {
+        if (this.front == null || index == this.size) {
             this.add(item);
         } else {
-            
-            if(index == 0) {
+            if (index == 0) {
                 Node<T> temp = new Node<T>(null, item, this.front);
                 this.front.prev = temp;
                 this.front = temp; 
-            } else if (index <= this.size / 2){
-                Node<T> current = this.front;
-                int count = 0;
-                while(current.next != null && count < index) {
-                    current = current.next;
-                    count++;
-                }
+            } else if (index <= this.size / 2 + 1) {
+                Node<T> current = findNode(this.front, index);
                 Node<T> temp = new Node<T>(current.prev, item, current);
                 current.prev = temp;
                 temp.prev.next = temp;
-
             } else {
                 Node<T> current = this.back;
                 int count = this.size - 1;
-                while(current.prev != null && count > index) {
+                while (current.prev != null && count > index) {
                     current = current.prev;
                     count--;
                 }
@@ -164,45 +158,47 @@ public class DoubleLinkedList<T> implements IList<T> {
 
     @Override
     public T delete(int index) {
-        if(index < 0 || index >= this.size) {
-            throw new IndexOutOfBoundsException("Wrong Index");
-        }
+        testIndexOutOfBounds(index);
         
-        if(index == size - 1) {
+        if (index == size - 1) {
             return this.remove();
         }
-        
-        if(index == 0) {
-            T temp = this.front.data;
+        T temp = null;
+        if (index == 0) {
+            temp = this.front.data; 
             this.front = this.front.next;
             this.front.prev.next = null;
             this.front.prev = null;
-            this.size--;
-            return (T) temp; 
+        }  else if (index <= this.size / 2 + 1) {
+            Node<T> current = findNode(this.front, index);
+            temp = current.data;
+            current.prev.next = current.next;
+            current.next.prev = current.prev;
+            current.next = null;
+            current.prev = null;
+        } else {
+            int count = this.size - 1;
+            Node<T> current = this.back;
+            while (current.prev != null && count > index) {
+                current = current.prev;
+                count--;
+            }
+            temp = current.data;
+            current.next.prev = current.prev;
+            current.prev.next = current.next;
+            current.prev = null;
+            current.next = null;
         }
-        
-        int count = 0;
-        Node<T> current = this.front;
-        while(current.next != null && count < index) {
-            current = current.next;
-            count++;
-        }
-        Node<T> temp = current;
-        current.prev.next = current.next;
-        current.next.prev = current.prev;
-        current.next = null;
-        current.prev = null;
         this.size--;
-        return (T) temp.data;       
+        return temp;
     }
 
     @Override
-    public int indexOf(T item) {   
-        
+    public int indexOf(T item) {
         Node<T> current = this.front;
         int idx = 0;
-        while(current != null) {
-            if(current.data == null ||current.data.equals(item)) {
+        while (current != null) {
+            if (current.data == null ||current.data.equals(item)) {
                 return idx;
             }
             current = current.next;
@@ -274,10 +270,10 @@ public class DoubleLinkedList<T> implements IList<T> {
          *         there are no more elements to look at.
          */
         public T next() {
-            if(this.current == null) {
+            if (this.current == null) {
                 throw new NoSuchElementException("empty");
             }
-            if(hasNext()) {
+            if (hasNext()) {
                 T temp = (T) this.current.data;
                 this.current = this.current.next;
                 return temp;
