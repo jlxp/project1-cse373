@@ -1,6 +1,7 @@
 package datastructures.concrete.dictionaries;
 
 import datastructures.interfaces.IDictionary;
+import misc.exceptions.NoSuchKeyException;
 import misc.exceptions.NotYetImplementedException;
 
 /**
@@ -12,9 +13,12 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     private Pair<K, V>[] pairs;
 
     // You're encouraged to add extra fields (and helper methods) though!
-
+    private int size;
+    private final int INIT_SIZE = 10;
+    
     public ArrayDictionary() {
-        throw new UnsupportedOperationException();
+        pairs = makeArrayOfPairs(INIT_SIZE);
+        size = 0;
     }
 
     /**
@@ -41,27 +45,75 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
 
     @Override
     public V get(K key) {
-        throw new NotYetImplementedException();
+        if (!this.containsKey(key)) {
+            throw new NoSuchKeyException("No key");
+        }
+        for (int i = 0; i < this.size; i++) {
+            if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
+                return (V) this.pairs[i].value;
+            }
+        }
+        return null;
     }
 
     @Override
     public void put(K key, V value) {
-        throw new NotYetImplementedException();
+        if (!this.containsKey(key)) {
+            if (this.size < this.pairs.length) {
+                this.pairs[this.size] = new Pair<>(key, value);
+            } else {
+                Pair<K, V>[] result = makeArrayOfPairs(this.pairs.length * 2);
+                for (int i = 0; i < this.pairs.length; i++) {
+                    result[i] = this.pairs[i];
+                }
+                result[this.pairs.length] = new Pair<>(key, value);
+                this.pairs = result;
+            }
+            this.size++;
+        } else {
+            for (int i = 0; i < this.size; i++) {
+                if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
+                    this.pairs[i] = new Pair<>(key, value);
+                }
+            }
+        }
     }
 
     @Override
     public V remove(K key) {
-        throw new NotYetImplementedException();
+        if (!this.containsKey(key)) {
+            throw new NoSuchKeyException("No key");
+        }
+        V temp = null;
+        if (this.pairs[this.size - 1].key == null || this.pairs[this.size - 1].key.equals(key)) {
+            temp = this.pairs[this.size - 1].value;
+            this.pairs[this.size - 1] = null;
+        } else {
+            for (int i = 0; i < this.size - 1; i++) {
+                if (this.pairs[i].key.equals(key)) {
+                    temp = this.pairs[i].value;
+                    this.pairs[i] = this.pairs[this.size - 1];
+                    this.pairs[this.size - 1] = null;
+                }
+            }
+        }
+        this.size--;
+        return (V) temp;
     }
 
     @Override
     public boolean containsKey(K key) {
-        throw new NotYetImplementedException();
+        for (int i = 0; i < this.size; i++) {
+            if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return this.size;
     }
 
     private static class Pair<K, V> {

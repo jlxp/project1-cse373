@@ -71,11 +71,20 @@ public class DoubleLinkedList<T> implements IList<T> {
     
     /*TODO: insert comment here*/
     private Node<T> findNode(Node<T> start, int index) {
-        int count = 0;
+        int count;
         Node<T> current = start;
-        while (current.next != null && count < index) {
-            current = current.next;
-            count++;
+        if (start == this.back) {
+            count = this.size - 1;
+            while (current.prev != null && count > index) {
+                current = current.prev;
+                count--;
+            }
+        } else {
+            count = 0;
+            while (current.next != null && count < index) {
+                current = current.next;
+                count++;
+            }
         }
         return current;
     }
@@ -132,23 +141,22 @@ public class DoubleLinkedList<T> implements IList<T> {
         if (this.front == null || index == this.size) {
             this.add(item);
         } else {
+            Node<T> temp = new Node<T>(item);
+            Node<T> current;
             if (index == 0) {
-                Node<T> temp = new Node<T>(null, item, this.front);
+                temp.next = this.front;
                 this.front.prev = temp;
                 this.front = temp; 
             } else if (index <= this.size / 2 + 1) {
-                Node<T> current = findNode(this.front, index);
-                Node<T> temp = new Node<T>(current.prev, item, current);
+                current = findNode(this.front, index);
+                temp.prev = current.prev;
+                temp.next = current;
                 current.prev = temp;
                 temp.prev.next = temp;
             } else {
-                Node<T> current = this.back;
-                int count = this.size - 1;
-                while (current.prev != null && count > index) {
-                    current = current.prev;
-                    count--;
-                }
-                Node<T> temp = new Node<T>(current, item, current.next);
+                current = findNode(this.back, index);
+                temp.prev = current;
+                temp.next = current.next;
                 current.next = temp;
                 temp.next.prev = temp;
             }
@@ -177,12 +185,7 @@ public class DoubleLinkedList<T> implements IList<T> {
             current.next = null;
             current.prev = null;
         } else {
-            int count = this.size - 1;
-            Node<T> current = this.back;
-            while (current.prev != null && count > index) {
-                current = current.prev;
-                count--;
-            }
+            Node<T> current = findNode(this.back, index);
             temp = current.data;
             current.next.prev = current.prev;
             current.prev.next = current.next;
