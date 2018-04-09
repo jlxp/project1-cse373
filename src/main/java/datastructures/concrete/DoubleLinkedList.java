@@ -62,12 +62,14 @@ public class DoubleLinkedList<T> implements IList<T> {
         return temp.data;
     }
     
+    /*TODO: insert comment here*/
     private void testIndexOutOfBounds(int index) {
         if (index < 0 || index >= this.size) {
             throw new IndexOutOfBoundsException("Wrong Index");
         }
     }
     
+    /*TODO: insert comment here*/
     private Node<T> findNode(Node<T> start, int index) {
         int count = 0;
         Node<T> current = start;
