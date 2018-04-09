@@ -177,6 +177,7 @@ public class DoubleLinkedList<T> implements IList<T> {
             this.front = this.front.next;
             this.front.prev.next = null;
             this.front.prev = null;
+            this.size--;
             return (T) temp; 
         }
         
