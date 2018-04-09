@@ -4,6 +4,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import datastructures.concrete.DoubleLinkedList;
+import datastructures.interfaces.IList;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -12,10 +15,21 @@ import static org.junit.Assert.assertTrue;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestDeleteStress extends TestDoubleLinkedList {
+
+    // Test delete is efficient
     @Test(timeout=SECOND)
-    public void testExample() {
-        // Feel free to modify or delete this dummy test.
-        assertTrue(true);
-        assertEquals(3, 3);
+    public void testAddAndDeleteIsEfficient() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        int cap = 10000;
+        for (int i = 0; i < cap; i++) {
+            list.add(i * 2);
+        }
+        assertEquals(cap, list.size());
+        for (int i = cap - 1 / 2; i < cap; i++) {
+            assertEquals(list.get(i), list.delete(i));
+        }
+        for (int i = 0; i < list.size(); i++) {
+            assertEquals(list.get(i), list.delete(i));
+        }
     }
 }
