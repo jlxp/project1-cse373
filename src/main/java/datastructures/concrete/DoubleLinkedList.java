@@ -165,7 +165,10 @@ public class DoubleLinkedList<T> implements IList<T> {
         }
         T temp = null;
         if (index == 0) {
+<<<<<<< HEAD
             temp = this.front.data; 
+=======
+>>>>>>> 5b5d1e95ab07732c28aa700b27df31454612b578
             this.front = this.front.next;
             this.front.prev.next = null;
             this.front.prev = null;
