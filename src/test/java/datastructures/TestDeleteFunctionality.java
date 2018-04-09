@@ -7,7 +7,6 @@ import org.junit.runners.MethodSorters;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
