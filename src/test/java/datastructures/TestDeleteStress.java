@@ -16,20 +16,47 @@ import static org.junit.Assert.assertTrue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestDeleteStress extends TestDoubleLinkedList {
 
-    // Test delete is efficient
-    @Test(timeout=SECOND)
-    public void testAddAndDeleteIsEfficient() {
-        IList<Integer> list = new DoubleLinkedList<>();
+    public IList<Integer> list = new DoubleLinkedList<>();
+    
+    public void add() {
         int cap = 10000;
         for (int i = 0; i < cap; i++) {
             list.add(i * 2);
         }
         assertEquals(cap, list.size());
-        for (int i = cap - 1 / 2; i < cap; i++) {
-            assertEquals(list.get(i), list.delete(i));
-        }
+    }
+    
+    // Test delete is efficient
+    @Test(timeout=SECOND)
+    public void testDeleteFrontIsEfficient() {
+        add();
         for (int i = 0; i < list.size(); i++) {
             assertEquals(list.get(i), list.delete(i));
         }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testDeleteBackIsEfficient() {
+        add();
+        for (int i = list.size(); i > list.size(); i--) {
+            assertEquals(list.get(i), list.delete(i));
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testDeleteMiddleIsEfficient() {
+        add();
+        for (int i = list.size() / 2 + 1; i < list.size(); i++) {
+            assertEquals(list.get(i), list.delete(i));
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testDeleteNearEndIsEfficient() {
+        add();
+        for (int i = 0; i < list.size(); i++) {
+            list.delete(list.size() - 2);
+        }
+        
     }
 }
