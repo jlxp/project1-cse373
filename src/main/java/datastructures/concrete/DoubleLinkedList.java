@@ -68,22 +68,25 @@ public class DoubleLinkedList<T> implements IList<T> {
         }
     }
     
+    private Node<T> findNode(Node<T> start, int index) {
+        int count = 0;
+        Node<T> current = start;
+        while (current.next != null && count < index) {
+            current = current.next;
+            count++;
+        }
+        return current;
+    }
+    
     @Override
     public T get(int index) {
         testIndexOutOfBounds(index);
-        
         if (index == 0) {
             return this.front.data;
         } else if (index == this.size -1) {
             return this.back.data;
         } else {
-            int count = 0;
-            Node<T> current = this.front;
-            while (current.next != null && count < index) {
-                current = current.next;
-                count++;
-            }
-            return (T) current.data;
+            return findNode(this.front, index).data;
         }
     }
 
@@ -94,7 +97,7 @@ public class DoubleLinkedList<T> implements IList<T> {
         if (this.front.next == null) {
             this.front = new Node<T>(null, item, null);
         } else {
-            Node<T> current = this.front;
+            Node<T> current = findNode(this.front, index);
             Node<T> temp = new Node<T>(item);
             if (index == 0) {
                 temp.next = current.next;
@@ -108,11 +111,6 @@ public class DoubleLinkedList<T> implements IList<T> {
                 current.prev = null;
                 this.back = temp;
             } else {
-                int count = 0;
-                while (current.next != null && count < index) {
-                    current = current.next;
-                    count++;
-                }
                 temp.prev = current.prev;
                 temp.next = current.next; 
                 current.prev.next = temp;
@@ -137,12 +135,7 @@ public class DoubleLinkedList<T> implements IList<T> {
                 this.front.prev = temp;
                 this.front = temp; 
             } else if (index <= this.size / 2 + 1) {
-                Node<T> current = this.front;
-                int count = 0;
-                while (current.next != null && count < index) {
-                    current = current.next;
-                    count++;
-                }
+                Node<T> current = findNode(this.front, index);
                 Node<T> temp = new Node<T>(current.prev, item, current);
                 current.prev = temp;
                 temp.prev.next = temp;
@@ -164,31 +157,22 @@ public class DoubleLinkedList<T> implements IList<T> {
     @Override
     public T delete(int index) {
         testIndexOutOfBounds(index);
-        this.size--;
         
         if (index == size - 1) {
             return this.remove();
         }
-        
+        T temp = null;
         if (index == 0) {
-            T temp = this.front.data;
             this.front = this.front.next;
             this.front.prev.next = null;
             this.front.prev = null;
-            return (T) temp; 
         }  else if (index <= this.size / 2 + 1) {
-            int count = 0;
-            Node<T> current = this.front;
-            while (current.next != null && count < index) {
-                current = current.next;
-                count++;
-            }
-            Node<T> temp = current;
+            Node<T> current = findNode(this.front, index);
+            temp = current.data;
             current.prev.next = current.next;
             current.next.prev = current.prev;
             current.next = null;
             current.prev = null;
-            return (T) temp.data;
         } else {
             int count = this.size - 1;
             Node<T> current = this.back;
@@ -196,13 +180,14 @@ public class DoubleLinkedList<T> implements IList<T> {
                 current = current.prev;
                 count--;
             }
-            Node<T> temp = current;
+            temp = current.data;
             current.next.prev = current.prev;
             current.prev.next = current.next;
             current.prev = null;
             current.next = null;
-            return (T) temp.data;
         }
+        this.size--;
+        return temp;
     }
 
     @Override
