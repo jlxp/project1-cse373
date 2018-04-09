@@ -32,6 +32,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         assertListMatches(new String[] {"a", "c"}, list);
         assertEquals(2, list.size());
     }
+    
     @Test(timeout=SECOND)
     public void testDeleteOnFront() {
         IList<String> list = makeBasicList();
@@ -40,6 +41,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         assertListMatches(new String[] {"b", "c"}, list);
         assertEquals(2, list.size());
     }
+    
     @Test(timeout=SECOND)
     public void testDeleteSingle() {
         IList<String> list = new DoubleLinkedList<>();
@@ -49,7 +51,9 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         list.delete(0);
         
         assertEquals(0, list.size());
+        assertListMatches(new String[] { }, list);
     }
+    
     @Test(timeout=SECOND)
     public void testDeleteOOBException() {
         IList<String> list = makeBasicList();
@@ -59,11 +63,13 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
             fail("Expected Out of Bounds Exception");
         } catch (IndexOutOfBoundsException ex) {
             // do nothing
-        }
-      
-        
+        }      
     }
     
+    /*
+     * It is borrowed from TestDoubleLinkedList from given file
+     * @see datastructures.TestDoubleLinkedList#makeBasicList()
+     */
     protected IList<String> makeBasicList() {
         IList<String> list = new DoubleLinkedList<>();
 
