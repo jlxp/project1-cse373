@@ -136,7 +136,7 @@ public class DoubleLinkedList<T> implements IList<T> {
                 Node<T> temp = new Node<T>(null, item, this.front);
                 this.front.prev = temp;
                 this.front = temp; 
-            } else if (index <= this.size / 2){
+            } else if (index <= this.size / 2 + 1){
                 Node<T> current = this.front;
                 int count = 0;
                 while(current.next != null && count < index) {
