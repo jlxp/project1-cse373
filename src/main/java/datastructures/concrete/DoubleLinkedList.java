@@ -228,14 +228,9 @@ public class DoubleLinkedList<T> implements IList<T> {
         Node<T> current = this.front;
         int idx = 0;
         while (current != null) {
-            if(current.data == null || item == null) {
-                if(current.data == item) {
-                    return idx;
-                }
-            } else {
-                if (current.data.equals(item)) {
-                    return idx;
-                }
+            if ((current.data == item && current.data == item)
+                    || (current.data != null && current.data.equals(item))) {
+                return idx;
             }
             current = current.next;
             idx++;
