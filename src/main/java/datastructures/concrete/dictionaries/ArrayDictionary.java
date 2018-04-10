@@ -47,8 +47,14 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     public V get(K key) {
         checkKey(key);
         for (int i = 0; i < this.size; i++) {
-            if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
-                return (V) this.pairs[i].value;
+            if (this.pairs[i].key == null || key == null) {
+                if (this.pairs[i].key == key) {
+                    return (V) this.pairs[i].value;
+                }
+            } else {
+                if (this.pairs[i].key.equals(key)) {
+                    return (V) this.pairs[i].value;
+                }
             }
         }
         return null;
@@ -77,8 +83,14 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
             this.size++;
         } else {
             for (int i = 0; i < this.size; i++) {
-                if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
-                    this.pairs[i] = new Pair<>(key, value);
+                if (this.pairs[i].key == null || key == null) {
+                    if (this.pairs[i].key == key) {
+                        this.pairs[i] = new Pair<>(key, value);
+                    }
+                } else {
+                    if (this.pairs[i].key.equals(key)) {
+                        this.pairs[i] = new Pair<>(key, value);
+                    }
                 }
             }
         }
@@ -93,10 +105,18 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
             this.pairs[this.size - 1] = null;
         } else {
             for (int i = 0; i < this.size - 1; i++) {
-                if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
-                    temp = this.pairs[i].value;
-                    this.pairs[i] = this.pairs[this.size - 1];
-                    this.pairs[this.size - 1] = null;
+                if (this.pairs[i].key == null || key == null) {
+                    if (this.pairs[i].key == key) {
+                        temp = this.pairs[i].value;
+                        this.pairs[i] = this.pairs[this.size - 1];
+                        this.pairs[this.size - 1] = null;
+                    }
+                } else {
+                    if (this.pairs[i].key.equals(key)) {
+                        temp = this.pairs[i].value;
+                        this.pairs[i] = this.pairs[this.size - 1];
+                        this.pairs[this.size - 1] = null;
+                    }
                 }
             }
         }
