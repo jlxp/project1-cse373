@@ -315,7 +315,7 @@ public class TestArrayDictionary extends BaseTest {
 
         dict.put(null, "hello");
         dict.put(null, "world");
-
+        System.out.println(dict.get(null).toString());
         assertEquals("world", dict.get(null));
         assertTrue(dict.containsKey(null));
         assertEquals("world", dict.remove(null));
@@ -334,5 +334,20 @@ public class TestArrayDictionary extends BaseTest {
         for (int i = 0; i < cap; i++) {
             assertEquals("newValC", dict.get("keyC"));
         }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testNullKey2() {
+        IDictionary<String, String> dict = this.makeBasicDictionary();
+        
+        dict.put(null, "hello");
+        dict.put(null, "world");
+        dict.put("hey", "ya");
+        System.out.println(dict.get(null).toString());
+        assertEquals("world", dict.get(null));
+        assertTrue(dict.containsKey(null));
+        assertEquals("ya", dict.get("hey"));
+        assertEquals("world", dict.remove(null));
+        assertFalse(dict.containsKey(null));
     }
 }

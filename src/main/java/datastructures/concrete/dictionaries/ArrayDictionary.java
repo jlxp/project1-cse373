@@ -100,6 +100,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
                 }
             }
         }
+ 
         this.size--;
         return (V) temp;
     }
