@@ -108,8 +108,14 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     @Override
     public boolean containsKey(K key) {
         for (int i = 0; i < this.size; i++) {
-            if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
-                return true;
+            if (this.pairs[i].key == null || key == null) {
+                if(this.pairs[i].key == key) {
+                    return true; 
+                }
+            } else {
+                if (this.pairs[i].key.equals(key)) {
+                    return true;
+                }
             }
         }
         return false;
