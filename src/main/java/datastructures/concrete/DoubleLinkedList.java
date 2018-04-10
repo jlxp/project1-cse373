@@ -27,11 +27,15 @@ public class DoubleLinkedList<T> implements IList<T> {
         this.size = 0;
     }
 
+    /*
+     * add given item at the end of the list
+     * @see datastructures.interfaces.IList#add(java.lang.Object)
+     */
     @Override
     public void add(T item) {
-        if (item == null) {
-            throw new IllegalArgumentException("Parameter must not be null");
-        }
+        //if (item == null) {
+          //  throw new IllegalArgumentException("Parameter must not be null"); 
+        //}
         Node<T> temp = new Node<T>(item);
         if (this.size == 0) {
             this.front = temp;
@@ -44,6 +48,10 @@ public class DoubleLinkedList<T> implements IList<T> {
         this.size++;
     }
 
+    /*
+     * remove and return the item at the end of the list
+     * @see datastructures.interfaces.IList#remove()
+     */
     @Override
     public T remove() {
         if (this.size == 0) {
@@ -62,14 +70,18 @@ public class DoubleLinkedList<T> implements IList<T> {
         return temp.data;
     }
     
-    /*TODO: insert comment here*/
+    /*
+     * @throw IndexOutOfBoundsException if index is not within proper range, between 0 and the size
+     */
     private void testIndexOutOfBounds(int index) {
         if (index < 0 || index >= this.size) {
-            throw new IndexOutOfBoundsException("Wrong Index");
+            throw new IndexOutOfBoundsException("Index is not within the proper range");
         }
     }
     
-    /*TODO: insert comment here*/
+    /*
+     * find and return the node at the given index
+     */
     private Node<T> findNode(Node<T> start, int index) {
         int count;
         Node<T> current = start;
@@ -89,6 +101,11 @@ public class DoubleLinkedList<T> implements IList<T> {
         return current;
     }
     
+    /*
+     * return the item at the given index
+     * @throw 
+     * @see datastructures.interfaces.IList#get(int)
+     */
     @Override
     public T get(int index) {
         testIndexOutOfBounds(index);
@@ -100,7 +117,12 @@ public class DoubleLinkedList<T> implements IList<T> {
             return findNode(this.front, index).data;
         }
     }
-
+    
+    /*
+     * overwrites the element at the given index to the given item
+     * @throw 
+     * @see datastructures.interfaces.IList#set(int, java.lang.Object)
+     */
     @Override
     public void set(int index, T item) {
         testIndexOutOfBounds(index);
@@ -108,9 +130,10 @@ public class DoubleLinkedList<T> implements IList<T> {
         if (this.front.next == null) {
             this.front = new Node<T>(null, item, null);
         } else {
-            Node<T> current = findNode(this.front, index);
+            Node<T> current;
             Node<T> temp = new Node<T>(item);
             if (index == 0) {
+                current = this.front;
                 temp.next = current.next;
                 current.next.prev = temp;
                 current.next = null;
@@ -122,6 +145,7 @@ public class DoubleLinkedList<T> implements IList<T> {
                 current.prev = null;
                 this.back = temp;
             } else {
+                current = findNode(this.front, index);
                 temp.prev = current.prev;
                 temp.next = current.next; 
                 current.prev.next = temp;
@@ -131,7 +155,13 @@ public class DoubleLinkedList<T> implements IList<T> {
             }
         }
     }
-
+    
+    /*
+     * Inserts the given item at the given index, 
+     * If there is existing element at the given index,
+     * overwrites the element with given item and shifts next elements over to its next
+     * @see datastructures.interfaces.IList#insert(int, java.lang.Object)
+     */
     @Override
     public void insert(int index, T item) {
         if (index < 0 || index >= this.size + 1) {
@@ -201,7 +231,7 @@ public class DoubleLinkedList<T> implements IList<T> {
         Node<T> current = this.front;
         int idx = 0;
         while (current != null) {
-            if (current.data == null ||current.data.equals(item)) {
+            if (current.data == null || current.data.equals(item)) {
                 return idx;
             }
             current = current.next;
