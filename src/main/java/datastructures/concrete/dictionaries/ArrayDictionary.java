@@ -45,9 +45,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
 
     @Override
     public V get(K key) {
-        if (!this.containsKey(key)) {
-            throw new NoSuchKeyException("No key");
-        }
+        checkKey(key);
         for (int i = 0; i < this.size; i++) {
             if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
                 return (V) this.pairs[i].value;
@@ -55,7 +53,14 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         }
         return null;
     }
-
+    
+    /*TODO: add comment*/
+    private void checkKey(K key) {
+        if (!this.containsKey(key)) {
+            throw new NoSuchKeyException("dictionary does not contain key");
+        }
+    }
+    
     @Override
     public void put(K key, V value) {
         if (!this.containsKey(key)) {
@@ -66,7 +71,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
                 for (int i = 0; i < this.pairs.length; i++) {
                     result[i] = this.pairs[i];
                 }
-                result[this.pairs.length] = new Pair<>(key, value);
+                result[this.size] = new Pair<>(key, value);
                 this.pairs = result;
             }
             this.size++;
@@ -81,16 +86,14 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
 
     @Override
     public V remove(K key) {
-        if (!this.containsKey(key)) {
-            throw new NoSuchKeyException("No key");
-        }
+        checkKey(key);
         V temp = null;
         if (this.pairs[this.size - 1].key == null || this.pairs[this.size - 1].key.equals(key)) {
             temp = this.pairs[this.size - 1].value;
             this.pairs[this.size - 1] = null;
         } else {
             for (int i = 0; i < this.size - 1; i++) {
-                if (this.pairs[i].key.equals(key)) {
+                if (this.pairs[i].key == null || this.pairs[i].key.equals(key)) {
                     temp = this.pairs[i].value;
                     this.pairs[i] = this.pairs[this.size - 1];
                     this.pairs[this.size - 1] = null;

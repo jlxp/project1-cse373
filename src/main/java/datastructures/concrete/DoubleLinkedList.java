@@ -33,9 +33,6 @@ public class DoubleLinkedList<T> implements IList<T> {
      */
     @Override
     public void add(T item) {
-        //if (item == null) {
-          //  throw new IllegalArgumentException("Parameter must not be null"); 
-        //}
         Node<T> temp = new Node<T>(item);
         if (this.size == 0) {
             this.front = temp;
