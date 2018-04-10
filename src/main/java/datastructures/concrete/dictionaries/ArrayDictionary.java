@@ -17,8 +17,8 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     private final int INIT_SIZE = 10;
     
     public ArrayDictionary() {
-        pairs = makeArrayOfPairs(INIT_SIZE);
-        size = 0;
+        this.pairs = makeArrayOfPairs(INIT_SIZE);
+        this.size = 0;
     }
 
     /**
