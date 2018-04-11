@@ -46,7 +46,7 @@ public interface IList<T> extends Iterable<T> {
     /**
      * Deletes the item at the given index. If there are any elements located at a higher
      * index, shift them all down by one.
-     *
+     * 
      * @throws IndexOutOfBoundsException if the index < 0 or index >= this.size()
      */
     public T delete(int index);
