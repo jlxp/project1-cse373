@@ -2,21 +2,11 @@ package datastructures.concrete;
 
 import datastructures.interfaces.IList;
 import misc.exceptions.EmptyContainerException;
-import misc.exceptions.NotYetImplementedException;
-
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * Note: For more info on the expected behavior of your methods, see
- * the source code for IList.
- */
 public class DoubleLinkedList<T> implements IList<T> {
-    // You may not rename these fields or change their types.
-    // We will be inspecting these in our private tests.
-    // You also may not add any additional fields.
+
     private Node<T> front;
     private Node<T> back;
     private int size;
@@ -277,15 +267,11 @@ public class DoubleLinkedList<T> implements IList<T> {
      */
     @Override
     public Iterator<T> iterator() {
-        // Note: we have provided a part of the implementation of
-        // an iterator for you. You should complete the methods stubs
-        // in the DoubleLinkedListIterator inner class at the bottom
-        // of this file. You do not need to change this method.
         return new DoubleLinkedListIterator<>(this.front);
     }
 
     /*
-     * create a class that tracks the element of the container
+     * create the node that tracks the element of the container
      */
     private static class Node<E> {
         // You may not change the fields in this node or add any new fields.
@@ -307,7 +293,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     /*
-     * create a class that iterates the container
+     * create an iterator for the container
      */
     private static class DoubleLinkedListIterator<T> implements Iterator<T> {
         // You should not need to change this field, or add any new fields.

@@ -3,15 +3,11 @@ package datastructures.concrete.dictionaries;
 import datastructures.interfaces.IDictionary;
 import misc.exceptions.NoSuchKeyException;
 
-/**
- * See IDictionary for more details on what this class should do
- */
+
 public class ArrayDictionary<K, V> implements IDictionary<K, V> {
-    // You may not change or rename this field: we will be inspecting
-    // it using our private tests.
+
     private Pair<K, V>[] pairs;
 
-    // You're encouraged to add extra fields (and helper methods) though!
     private int size;
     private final int INIT_SIZE = 10;
     
@@ -28,20 +24,15 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @SuppressWarnings("unchecked")
     private Pair<K, V>[] makeArrayOfPairs(int arraySize) {
-        // It turns out that creating arrays of generic objects in Java
-        // is complicated due to something known as 'type erasure'.
-        //
-        // We've given you this helper method to help simplify this part of
-        // your assignment. Use this helper method as appropriate when
-        // implementing the rest of this class.
-        //
-        // You are not required to understand how this method works, what
-        // type erasure is, or how arrays and generics interact. Do not
-        // modify this method in any way.
         return (Pair<K, V>[]) (new Pair[arraySize]);
 
     }
-
+    
+    /*
+     * return the value that is matching with given key
+     * @throws NoSuchKeyException if there is no key that matches with the given key
+     * @see datastructures.interfaces.IDictionary#get(java.lang.Object)
+     */
     @Override
     public V get(K key) {
         checkKey(key);
@@ -54,13 +45,20 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         return null;
     }
     
-    /*TODO: add comment*/
+    /*
+     * @throws NoSuchKeyException if there is no key that matches with the given key  
+     */
     private void checkKey(K key) {
         if (!this.containsKey(key)) {
             throw new NoSuchKeyException("dictionary does not contain key");
         }
     }
     
+    /*
+     * Put the pair of given key and value to the dictionary
+     * If key is already in the dictionary, replace the value with the given value for that key
+     * @see datastructures.interfaces.IDictionary#put(java.lang.Object, java.lang.Object)
+     */
     @Override
     public void put(K key, V value) {
         if (!this.containsKey(key)) {
@@ -85,6 +83,11 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         }
     }
 
+    /*
+     * remove the pair of given key and its value from the dictionary
+     * @throws NoSuchKeyException if there is no key matching given key in dictionary
+     * @see datastructures.interfaces.IDictionary#remove(java.lang.Object)
+     */
     @Override
     public V remove(K key) {
         checkKey(key);
@@ -106,7 +109,13 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         this.size--;
         return (V) temp;
     }
+    
 
+    /*
+     * return true if there is key in dictionary that matches with given key
+     * return false otherwise
+     * @see datastructures.interfaces.IDictionary#containsKey(java.lang.Object)
+     */
     @Override
     public boolean containsKey(K key) {
         for (int i = 0; i < this.size; i++) {
@@ -118,16 +127,23 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         return false;
     }
 
+    /*
+     * return the size of dictionary
+     * @see datastructures.interfaces.IDictionary#size()
+     */
     @Override
     public int size() {
         return this.size;
     }
 
+    /*
+     * create a pair of key and value
+     */
     private static class Pair<K, V> {
         public K key;
         public V value;
 
-        // You may add constructors and methods to this class as necessary.
+        // initiates the pair with given key and value
         public Pair(K key, V value) {
             this.key = key;
             this.value = value;
