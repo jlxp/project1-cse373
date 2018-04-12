@@ -18,6 +18,9 @@ public class TestDeleteStress extends TestDoubleLinkedList {
 
     public IList<Integer> list = new DoubleLinkedList<>();
     
+    /*
+     * create the list size of cap 
+     */
     public void add() {
         int cap = 10000;
         for (int i = 0; i < cap; i++) {

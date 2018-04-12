@@ -68,7 +68,8 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     }
     
     /*
-     * It is borrowed from TestDoubleLinkedList from given file
+     * It is borrowed from TestDoubleLinkedList of file
+     * create a simple list
      * @see datastructures.TestDoubleLinkedList#makeBasicList()
      */
     protected IList<String> makeBasicList() {
