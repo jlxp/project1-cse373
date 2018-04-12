@@ -18,7 +18,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     /*
-     * add given item at the end of the list
+     * add given item passed as a parameter at the end of the list
      * @see datastructures.interfaces.IList#add(java.lang.Object)
      */
     @Override
@@ -36,7 +36,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     /*
-     * remove and return the item at the end of the list
+     * removes and returns the item at the end of the list
      * @throws EmptyContainerException if the container is empty
      * @see datastructures.interfaces.IList#remove()
      */
@@ -59,7 +59,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * @throw IndexOutOfBoundsException if index < 0 or index > size of element
+     * @throws IndexOutOfBoundsException if index < 0 or index >= size of element
      */
     private void testIndexOutOfBounds(int index) {
         if (index < 0 || index >= this.size) {
@@ -68,7 +68,8 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * find and return the node at the given index
+     * finds and returns the node using the given index and starting point that are
+     * passed in as parameters
      */
     private Node<T> findNode(Node<T> start, int index) {
         int count;
@@ -90,8 +91,8 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * return the item at the given index
-     * @throws IndexOutOfBoundsException if index < 0, index > size
+     * returns the item at the index passed in as a parameter
+     * @throws IndexOutOfBoundsException if index < 0, index >= size
      * @see datastructures.interfaces.IList#get(int)
      */
     @Override
@@ -107,8 +108,9 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * overwrites the element at the given index to the given item
-     * @throws IndexOutOfBoundsException if index < 0, index > size
+     * Overwrites the element at the given index to the given item
+     * passed in as parameters
+     * @throws IndexOutOfBoundsException if index < 0, index >= size
      * @see datastructures.interfaces.IList#set(int, java.lang.Object)
      */
     @Override
@@ -145,10 +147,10 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * Inserts the given item at the given index, 
-     * If there is existing element at the given index,
-     * overwrites the element with given item and shifts next elements over to its next
-     * @throws IndexOutOfBoundsException if index < 0 or index > size + 1
+     * Inserts the given item at the given index, passed in as parameters,
+     * if there is existing element at the given index, it shifts next 
+     * elements over to the right.
+     * @throws IndexOutOfBoundsException if index < 0 or index >= size + 1
      * @see datastructures.interfaces.IList#insert(int, java.lang.Object)
      */
     @Override
@@ -184,9 +186,9 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * delete and return the element of the given index
-     * Shift the elemets of higher indices down by one
-     * @throws IndexOutOfBoundsException if index < 0 or index > size
+     * deletes and returns the element of the given index passed in as a parameter
+     * Shift the elements of higher indices down by one
+     * @throws IndexOutOfBoundsException if index < 0 or index >= size
      * @see datastructures.interfaces.IList#delete(int)
      */
     @Override
@@ -222,8 +224,8 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     /*
-     * return the index of the first occurrence of given item
-     * return -1 if there is no element that matches given item
+     * return the index of the first occurrence of given item passed in as
+     * a parameter returns -1 if there is no element that matches given item
      * @see datastructures.interfaces.IList#indexOf(java.lang.Object)
      */
     @Override
@@ -242,17 +244,16 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
     
     /*
-     * return the size of the container
+     * returns the size of the list
      * @see datastructures.interfaces.IList#size()
      */
-
     @Override
     public int size() {
         return this.size;
     }
     
     /*
-     * return true if there is element that matches the given element
+     * return true if there is an element that matches the given element
      * return false otherwise
      * @see datastructures.interfaces.IList#contains(java.lang.Object)
      */
@@ -262,7 +263,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     /*
-     * return the iterator for the container
+     * returns the iterator for the list
      * @see datastructures.interfaces.IList#iterator()
      */
     @Override
@@ -271,10 +272,10 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     /*
-     * create the node that tracks the element of the container
+     * creates a node that holds the data that can be "linked" together to create
+     * a two way list
      */
     private static class Node<E> {
-        // You may not change the fields in this node or add any new fields.
         public final E data;
         public Node<E> prev;
         public Node<E> next;
@@ -288,19 +289,15 @@ public class DoubleLinkedList<T> implements IList<T> {
         public Node(E data) {
             this(null, data, null);
         }
-
-        // Feel free to add additional constructors or methods to this class.
     }
 
     /*
-     * create an iterator for the container
+     * creates an iterator for the list
      */
     private static class DoubleLinkedListIterator<T> implements Iterator<T> {
-        // You should not need to change this field, or add any new fields.
         private Node<T> current;
 
         public DoubleLinkedListIterator(Node<T> current) {
-            // You do not need to make any changes to this constructor.
             this.current = current;
         }
 
@@ -321,7 +318,7 @@ public class DoubleLinkedList<T> implements IList<T> {
          */
         public T next() {
             if (this.current == null) {
-                throw new NoSuchElementException("It is empty");
+                throw new NoSuchElementException("List is empty");
             }
             if (hasNext()) {
                 T temp = (T) this.current.data;

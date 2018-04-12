@@ -29,7 +29,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     }
     
     /*
-     * return the value that is matching with given key
+     * return the value that is matching with the given key passed as a parameter
      * @throws NoSuchKeyException if there is no key that matches with the given key
      * @see datastructures.interfaces.IDictionary#get(java.lang.Object)
      */
@@ -46,7 +46,8 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     }
     
     /*
-     * @throws NoSuchKeyException if there is no key that matches with the given key  
+     * @throws NoSuchKeyException if there is no key that matches with the key
+     * passed in as a parameter
      */
     private void checkKey(K key) {
         if (!this.containsKey(key)) {
@@ -55,7 +56,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     }
     
     /*
-     * Put the pair of given key and value to the dictionary
+     * Puts/adds the pair of key and value parameters passed in to the dictionary
      * If key is already in the dictionary, replace the value with the given value for that key
      * @see datastructures.interfaces.IDictionary#put(java.lang.Object, java.lang.Object)
      */
@@ -84,8 +85,8 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     }
 
     /*
-     * remove the pair of given key and its value from the dictionary
-     * @throws NoSuchKeyException if there is no key matching given key in dictionary
+     * remove the given key passed in as a parameter and its value, from the dictionary
+     * @throws NoSuchKeyException if there is no key matching key in dictionary
      * @see datastructures.interfaces.IDictionary#remove(java.lang.Object)
      */
     @Override
@@ -109,10 +110,10 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         this.size--;
         return (V) temp;
     }
-    
 
     /*
-     * return true if there is key in dictionary that matches with given key
+     * return true if there is key in dictionary that matches with the given key
+     * passed in as a parameter
      * return false otherwise
      * @see datastructures.interfaces.IDictionary#containsKey(java.lang.Object)
      */
@@ -137,7 +138,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     }
 
     /*
-     * create a pair of key and value
+     * creates a pair of key and value
      */
     private static class Pair<K, V> {
         public K key;
