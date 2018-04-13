@@ -9,7 +9,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     private Pair<K, V>[] pairs;
 
     private int size;
-    private final int INIT_SIZE = 10;
+    private static final int INIT_SIZE = 10;
     
     public ArrayDictionary() {
         this.pairs = makeArrayOfPairs(INIT_SIZE);

@@ -56,7 +56,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     }
     
     @Test(timeout=SECOND)
-    public void testDeleteOOBException() {
+    public void testDeleteUpperOOBException() {
         IList<String> list = makeBasicList();
         
         try {
@@ -64,9 +64,22 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
             fail("Expected Out of Bounds Exception");
         } catch (IndexOutOfBoundsException ex) {
             // do nothing
-        }      
+        }   
+        
+        
     }
-    
+    public void testDeleteLowerOOBException() {
+        IList<String> list = makeBasicList();
+        
+        try {
+            list.delete(-1);
+            fail("Expected Out of Bounds Exception");
+        } catch (IndexOutOfBoundsException ex) {
+            // do nothing
+        }   
+        
+        
+    }   
     /*
      * It is borrowed from TestDoubleLinkedList of file
      * create a simple list

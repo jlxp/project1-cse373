@@ -22,7 +22,7 @@ public class TestDeleteStress extends TestDoubleLinkedList {
      * create the list size of cap 
      */
     public void add() {
-        int cap = 10000;
+        int cap = 500000;
         for (int i = 0; i < cap; i++) {
             list.add(i * 2);
         }
@@ -30,23 +30,24 @@ public class TestDeleteStress extends TestDoubleLinkedList {
     }
     
     // Test delete is efficient
-    @Test(timeout=SECOND)
+    @Test(timeout=15*SECOND)
     public void testDeleteFrontIsEfficient() {
         add();
         for (int i = 0; i < list.size(); i++) {
-            assertEquals(list.get(i), list.delete(i));
+           assertEquals(list.get(0), list.delete(0));
         }
+        
     }
     
-    @Test(timeout=SECOND)
+    @Test(timeout=15*SECOND)
     public void testDeleteBackIsEfficient() {
         add();
-        for (int i = list.size(); i > list.size(); i--) {
+        for (int i = list.size() - 1; i > 0; i--) {
             assertEquals(list.get(i), list.delete(i));
         }
     }
     
-    @Test(timeout=SECOND)
+    @Test(timeout=15 * SECOND)
     public void testDeleteMiddleIsEfficient() {
         add();
         for (int i = list.size() / 2 + 1; i < list.size(); i++) {
