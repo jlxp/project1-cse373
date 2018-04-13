@@ -16,51 +16,58 @@ import static org.junit.Assert.assertTrue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestDeleteStress extends TestDoubleLinkedList {
 
-    public IList<Integer> list = new DoubleLinkedList<>();
-    
     /*
      * create the list size of cap 
      */
-    public void add() {
+    public IList<Integer> add() {
         int cap = 500000;
+        IList<Integer> list = new DoubleLinkedList<>();
+        
         for (int i = 0; i < cap; i++) {
             list.add(i * 2);
         }
-        assertEquals(cap, list.size());
+        list.add(1);
+        list.add(3);
+        return list; 
     }
     
     // Test delete is efficient
     @Test(timeout=15*SECOND)
     public void testDeleteFrontIsEfficient() {
-        add();
-        for (int i = 0; i < list.size(); i++) {
+        IList<Integer> list = this.add();
+        int cap = list.size();
+        for (int i = 0; i < cap; i++) {
            assertEquals(list.get(0), list.delete(0));
         }
-        
+        assertEquals(list.size(),0); 
     }
     
     @Test(timeout=15*SECOND)
     public void testDeleteBackIsEfficient() {
-        add();
-        for (int i = list.size() - 1; i > 0; i--) {
+        IList<Integer> list = this.add();
+        int cap = list.size();
+        for (int i = cap - 1; i > 0; i--) {
             assertEquals(list.get(i), list.delete(i));
         }
+        assertEquals(list.size(),1); 
     }
     
     @Test(timeout=15 * SECOND)
     public void testDeleteMiddleIsEfficient() {
-        add();
-        for (int i = list.size() / 2 + 1; i < list.size(); i++) {
-            assertEquals(list.get(i), list.delete(i));
+        IList<Integer> list = this.add();
+        int cap = list.size();
+        for (int i = 0; i < cap / 2; i++) {
+            assertEquals(list.get(list.size() / 2 + (list.size() % 2)), list.delete(list.size() / 2 + (list.size() % 2)));
         }
     }
     
-    @Test(timeout=SECOND)
+    @Test(timeout=15 * SECOND)
     public void testDeleteNearEndIsEfficient() {
-        add();
-        for (int i = 0; i < list.size(); i++) {
+        IList<Integer> list = this.add();
+        int cap = list.size();
+        for (int i = 0; i < cap - 2; i++) {
             list.delete(list.size() - 2);
         }
-        
+        assertEquals(list.size(), 2);
     }
 }
