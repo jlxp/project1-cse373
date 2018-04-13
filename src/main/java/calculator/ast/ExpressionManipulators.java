@@ -107,7 +107,7 @@ public class ExpressionManipulators {
     }
     
     /**TODO Add comment*/
-    private double trigHelper(String name, double value) {
+    private static double trigHelper(String name, double value) {
         if (name.equals("sin")) {
             return Math.sin(value);
         } else {
@@ -117,7 +117,7 @@ public class ExpressionManipulators {
     
     
     /**TODO Add comment*/
-    private double operationHelper(String name, double left, double right) {
+    private static double operationHelper(String name, double left, double right) {
         if (name.equals("+")) {
             return left + right;
         } else if (name.equals("-")) {
