@@ -79,16 +79,15 @@ public class ExpressionManipulators {
             if (variables.containsKey(node.getName())) {
                 return variables.get(node.getName()).getNumericValue();
             } else {
-                return node.getNumericValue()
+                return node.getNumericValue();
             }
-            throw new NotYetImplementedException();
         } else {
             // You may assume the expression node has the correct number of children.
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
 
-            // TODO: your code here
+            node.getChildren();
             throw new NotYetImplementedException();
         }
     }
