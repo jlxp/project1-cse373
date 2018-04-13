@@ -102,9 +102,16 @@ public class DoubleLinkedList<T> implements IList<T> {
             return this.front.data;
         } else if (index == this.size -1) {
             return this.back.data;
+        } else if (index <= this.size / 2 + (this.size % 2)) {
+            return findNode(this.front, index).data;
+        } else {
+            return findNode(this.back, index).data;
+        }
+        /*
         } else {
             return findNode(this.front, index).data;
         }
+        */
     }
     
     /*

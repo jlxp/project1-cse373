@@ -25,7 +25,7 @@ import static org.junit.Assert.fail;
 public class TestDeleteFunctionality extends TestDoubleLinkedList {
     @Test(timeout=SECOND)
     public void basicTestDelete() {
-        IList<String> list = makeBasicList();
+        IList<String> list = this.makeBasicList();
         
         String temp = list.delete(1); 
         assertListMatches(new String[] {"a", "c"}, list);
@@ -57,7 +57,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     
     @Test(timeout=SECOND)
     public void testDeleteUpperOOBException() {
-        IList<String> list = makeBasicList();
+        IList<String> list = this.makeBasicList();
         
         try {
             list.delete(4);
@@ -69,7 +69,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         
     }
     public void testDeleteLowerOOBException() {
-        IList<String> list = makeBasicList();
+        IList<String> list = this.makeBasicList();
         
         try {
             list.delete(-1);

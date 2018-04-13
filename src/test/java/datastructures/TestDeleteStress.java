@@ -52,13 +52,16 @@ public class TestDeleteStress extends TestDoubleLinkedList {
         assertEquals(list.size(),1); 
     }
     
-    @Test(timeout=15 * SECOND)
+    @Test(timeout= 15 * SECOND)
     public void testDeleteMiddleIsEfficient() {
         IList<Integer> list = this.add();
         int cap = list.size();
-        for (int i = 0; i < cap / 2; i++) {
-            assertEquals(list.get(list.size() / 2 + (list.size() % 2)), list.delete(list.size() / 2 + (list.size() % 2)));
+        for (int i = 0; i < cap / 2 - 1; i++) {
+            list.delete(list.size() / 2 + (list.size() % 2));
+            assertEquals(list.size(), cap - i - 1);
+            System.out.println("idx: " + i + ", size" + list.size());
         }
+        System.out.println(list.size());
     }
     
     @Test(timeout=15 * SECOND)
