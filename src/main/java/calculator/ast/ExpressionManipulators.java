@@ -70,9 +70,17 @@ public class ExpressionManipulators {
         // There are three types of nodes, so we have three cases. 
         if (node.isNumber()) {
             // TODO: your code here
-            throw new NotYetImplementedException();
+            return node.getNumericValue();
         } else if (node.isVariable()) {
             // TODO: your code here
+            // if variable is defined then get that numberrr
+            // if not then just return the variable
+            // how do u know that variable is defined?
+            if (variables.containsKey(node.getName())) {
+                return variables.get(node.getName()).getNumericValue();
+            } else {
+                return node.getNumericValue()
+            }
             throw new NotYetImplementedException();
         } else {
             // You may assume the expression node has the correct number of children.
