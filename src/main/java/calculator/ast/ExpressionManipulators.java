@@ -74,9 +74,8 @@ public class ExpressionManipulators {
         } else if (node.isVariable()) {
             if (variables.containsKey(node.getName())) {
                 return variables.get(node.getName()).getNumericValue();
-            } else {
-                return node.getNumericValue();
             }
+            return node.getNumericValue();
         } else {
             // You may assume the expression node has the correct number of children.
             // If you wish to make your code more robust, you can also use the provided
@@ -165,11 +164,23 @@ public class ExpressionManipulators {
         //         the current level? Or before?
 
         assertNodeMatches(node, "simplify", 1);
-
-        // TODO: Your code here
-        throw new NotYetImplementedException();
+        
+        return simplifyHelper(env, node);
     }
-
+    
+    private static AstNode simplifyHelper(Environment env, AstNode node) {
+        if (node.isNumber() || node.isVariable()) {
+            return node;
+        }  else {
+            String name = node.getName();
+            String basicOp = "+-*^"; 
+            if (basicOp.contains(name)) {
+                return handleToDouble(env, node);
+            }
+            return node; 
+        }
+        
+    }
     /**
      * Accepts an Environment variable and a 'plot(exprToPlot, var, varMin, varMax, step)'
      * AstNode and generates the corresponding plot on the ImageDrawer attached to the
