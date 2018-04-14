@@ -2,6 +2,7 @@ package calculator.ast;
 
 import calculator.interpreter.Environment;
 import calculator.errors.EvaluationError;
+import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import misc.exceptions.NotYetImplementedException;
@@ -61,7 +62,7 @@ public class ExpressionManipulators {
         // If you're not sure why we have a public method calling a private
         // recursive helper method, review your notes from CSE 143 (or the
         // equivalent class you took) about the 'public-private pair' pattern.
-
+        
         assertNodeMatches(node, "toDouble", 1);
         AstNode exprToConvert = node.getChildren().get(0);
         return new AstNode(toDoubleHelper(env.getVariables(), exprToConvert));
@@ -69,20 +70,21 @@ public class ExpressionManipulators {
 
     private static double toDoubleHelper(IDictionary<String, AstNode> variables, AstNode node) {
         // There are three types of nodes, so we have three cases. 
+        
         if (node.isNumber()) {
             return node.getNumericValue();
         } else if (node.isVariable()) {
             if (variables.containsKey(node.getName())) {
-                return variables.get(node.getName()).getNumericValue();
+                return toDoubleHelper(variables, variables.get(node.getName()));
             }
-            return node.getNumericValue();
-        } else {
+            return node.getNumericValue(); // throw errorrrr
+        } else{
             // You may assume the expression node has the correct number of children.
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
             String basicOperators = "+-*/^";
-            if (basicOperators.contains(name)) {
+            if (basicOperators.contains(name) || name.equals("negate")) {
                 double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
                 double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
                 if (name.equals("negate")) {
@@ -90,19 +92,13 @@ public class ExpressionManipulators {
                 } else {
                     return operationHelper(name, valueLeft, valueRight);
                 }
-            } else {
+            } else if (name.equals("sin") || name.equals("cos")){
                 double value = toDoubleHelper(variables, node.getChildren().get(0));
                 return trigHelper(name, value);
+            } else {
+                throw new EvaluationError("rip");
             }
-            
-            // recurse to get the values i.e. base cases
-            // test and save what the operation is "name"
-            // call the operation helper
-            // return result from operation helper up to first method
-//            IList<AstNode> children = node.getChildren();
-            // return left  Operation  right;
-            // return operation(value);
-        }
+        } 
     }
     
     /**TODO Add comment*/
@@ -116,7 +112,7 @@ public class ExpressionManipulators {
     
     
     /**TODO Add comment*/
-    private static double operationHelper(String name, double left, double right) {
+    private static double operationHelper(String name, double left, double right) {               
         if (name.equals("+")) {
             return left + right;
         } else if (name.equals("-")) {
@@ -164,22 +160,57 @@ public class ExpressionManipulators {
         //         the current level? Or before?
 
         assertNodeMatches(node, "simplify", 1);
-        
-        return simplifyHelper(env, node);
+        AstNode exprToConvert = node.getChildren().get(0);
+ //       node = simplifyHelper(env.getVariables(), exprToConvert);
+        return simplifyHelper(env.getVariables(), exprToConvert);
     }
     
-    private static AstNode simplifyHelper(Environment env, AstNode node) {
-        if (node.isNumber() || node.isVariable()) {
+    private static AstNode simplifyHelper(IDictionary<String, AstNode> variables, AstNode node) {
+        if (node.isNumber()) {
             return node;
-        }  else {
+        }  else if (node.isVariable()) {
+            if (variables.containsKey(node.getName())) {
+                AstNode temp = variables.get(node.getName());
+                if (temp.isOperation()) {
+                    return simplifyHelper(variables, temp); 
+                } else {
+                    node = new AstNode(temp.getNumericValue());
+                }
+            }
+            return node;
+        } else {
             String name = node.getName();
             String basicOp = "+-*^"; 
             if (basicOp.contains(name)) {
-                return handleToDouble(env, node);
+                AstNode left = simplifyHelper(variables, node.getChildren().get(0));
+                AstNode right = simplifyHelper(variables, node.getChildren().get(1));
+                if (left.isNumber() && right.isNumber()) {
+                    node = new AstNode(operationHelper(name, left.getNumericValue(), right.getNumericValue()));
+                } else {
+                    IList<AstNode> list = new DoubleLinkedList<>();
+                    list.add(left);
+                    list.add(right);
+                    node = new AstNode(name, list);
+                }
+            } else if (name.equals("/")){
+                AstNode left = simplifyHelper(variables, node.getChildren().get(0));
+                AstNode right = simplifyHelper(variables, node.getChildren().get(1));
+                IList<AstNode> list = new DoubleLinkedList<>();
+                list.add(left);
+                list.add(right);
+                // return node
+                node = new AstNode(name, list);
+            } else {
+                AstNode child = simplifyHelper(variables, node.getChildren().get(0));
+                IList<AstNode> children = new DoubleLinkedList<>();
+                children.add(child);
+                node = new AstNode(name, children); 
             }
-            return node; 
+            // if it's not basic operation
+            // recurse from its child
+            
+            return node;
         }
-        
     }
     /**
      * Accepts an Environment variable and a 'plot(exprToPlot, var, varMin, varMax, step)'
