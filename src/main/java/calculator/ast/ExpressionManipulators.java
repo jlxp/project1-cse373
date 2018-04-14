@@ -86,11 +86,11 @@ public class ExpressionManipulators {
             if (basicOperators.contains(name)) {
                 double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
                 double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
-                return operationHelper(name, valueLeft, valueRight);
-            } else if (name.equals("negate")) {
-                double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
-                double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
-                return -(operationHelper(name, valueLeft, valueRight));
+                if (name.equals("negate")) {
+                    return -(operationHelper(name, valueLeft, valueRight));
+                } else {
+                    return operationHelper(name, valueLeft, valueRight);
+                }
             } else {
                 double value = toDoubleHelper(variables, node.getChildren().get(0));
                 return trigHelper(name, value);
