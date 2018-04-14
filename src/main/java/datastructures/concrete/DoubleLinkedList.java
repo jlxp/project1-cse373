@@ -71,20 +71,22 @@ public class DoubleLinkedList<T> implements IList<T> {
      * finds and returns the node using the given index and starting point that are
      * passed in as parameters
      */
-    private Node<T> findNode(Node<T> start, int index) {
+    private Node<T> findNode(int index) {
         int count;
-        Node<T> current = start;
-        if (start == this.back) {
-            count = this.size - 1;
-            while (current.prev != null && count > index) {
-                current = current.prev;
-                count--;
-            }
-        } else {
+        Node<T> current;
+        if (index <= this.size / 2 + (this.size % 2)) {
             count = 0;
+            current = this.front;
             while (current.next != null && count < index) {
                 current = current.next;
                 count++;
+            }
+        } else {
+            count = this.size - 1;
+            current = this.back;
+            while (current.prev != null && count > index) {
+                current = current.prev;
+                count--;
             }
         }
         return current;
@@ -102,10 +104,8 @@ public class DoubleLinkedList<T> implements IList<T> {
             return this.front.data;
         } else if (index == this.size -1) {
             return this.back.data;
-        } else if (index <= this.size / 2 + (this.size % 2)) {
-            return findNode(this.front, index).data;
         } else {
-            return findNode(this.back, index).data;
+            return this.findNode(index).data;
         }
     }
     
@@ -122,22 +122,15 @@ public class DoubleLinkedList<T> implements IList<T> {
         if (this.front.next == null) {
             this.front = new Node<T>(null, item, null);
         } else {
-            Node<T> current;
-            Node<T> temp = new Node<T>(item);
             if (index == 0) {
-                current = this.front;
-                temp.next = current.next;
-                current.next.prev = temp;
-                current.next = null;
-                this.front = temp;
+                this.delete(0);
+                this.insert(0, item);
             } else if (index == this.size - 1) {
-                current = this.back;
-                temp.prev = this.back.prev;
-                current.prev.next = temp;
-                current.prev = null;
-                this.back = temp;
+                this.remove();
+                this.add(item);
             } else {
-                current = findNode(this.front, index);
+                Node<T> temp = new Node<T>(item);
+                Node<T> current = this.findNode(index);
                 temp.prev = current.prev;
                 temp.next = current.next; 
                 current.prev.next = temp;
@@ -165,18 +158,12 @@ public class DoubleLinkedList<T> implements IList<T> {
             this.add(item);
         } else {
             Node<T> temp = new Node<T>(item);
-            Node<T> current;
             if (index == 0) {
                 temp.next = this.front;
                 this.front.prev = temp;
                 this.front = temp; 
             } else {
-                if (index <= this.size / 2 + (this.size % 2)) {
-                    current = findNode(this.front, index);
-                } else {
-                    current = findNode(this.back, index);
-                    current = current.prev;
-                }
+                Node<T> current = this.findNode(index);
                 temp.prev = current.prev;
                 temp.next = current;
                 current.prev = temp;
@@ -206,12 +193,7 @@ public class DoubleLinkedList<T> implements IList<T> {
             this.front.prev.next = null;
             this.front.prev = null;
         }  else {
-            Node<T> current;
-            if (index <= this.size / 2 + (this.size % 2)) {
-                current = findNode(this.front, index);
-            } else {
-                current = findNode(this.back, index);
-            }
+            Node<T> current = this.findNode(index);
             temp = current.data;
             current.next.prev = current.prev;
             current.prev.next = current.next;
