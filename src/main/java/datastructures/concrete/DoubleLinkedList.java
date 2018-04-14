@@ -104,9 +104,8 @@ public class DoubleLinkedList<T> implements IList<T> {
             return this.back.data;
         } else if (index <= this.size / 2 + (this.size % 2)) {
             return findNode(this.front, index).data;
-        } else {
-            return findNode(this.back, index).data;
-        }
+        } 
+        return findNode(this.back, index).data;
     }
     
     /*
@@ -159,17 +158,12 @@ public class DoubleLinkedList<T> implements IList<T> {
             this.add(item);
         } else {
             Node<T> temp = new Node<T>(item);
-            Node<T> current;
             if (index == 0) {
                 temp.next = this.front;
                 this.front.prev = temp;
                 this.front = temp; 
             } else {
-                if (index <= this.size / 2 + (this.size % 2)) {            
-                    current = findNode(this.front, index);
-                } else {
-                    current = findNode(this.back, index);
-                } 
+                Node<T> current = this.frontOrBack(index);
                 temp.prev = current.prev;
                 temp.next = current;
                 current.prev = temp;
@@ -199,12 +193,7 @@ public class DoubleLinkedList<T> implements IList<T> {
             this.front.prev.next = null;
             this.front.prev = null;
         }  else {
-            Node<T> current;
-            if (index <= this.size / 2 + (this.size % 2)) {
-                current = findNode(this.front, index);
-            } else {
-                current = findNode(this.back, index);
-            }
+            Node<T> current = this.frontOrBack(index);            
             temp = current.data;
             current.next.prev = current.prev;
             current.prev.next = current.next;
@@ -213,6 +202,16 @@ public class DoubleLinkedList<T> implements IList<T> {
         }
         this.size--;
         return temp;
+    }
+    
+    /*
+     * return node at given index in efficient way
+     */
+    private Node<T> frontOrBack(int index) {
+        if (index <= this.size / 2 + (this.size % 2)) {
+            return findNode(this.front, index);
+        }
+        return findNode(this.back, index);
     }
 
     /*
