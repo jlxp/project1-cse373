@@ -42,7 +42,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
                 return (V) this.pairs[i].value;
             }
         }
-        return null;
+        return null; //not going to happen
     }
     
     /*
