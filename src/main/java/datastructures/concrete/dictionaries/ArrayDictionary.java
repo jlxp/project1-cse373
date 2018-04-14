@@ -35,7 +35,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public V get(K key) {
-        checkKey(key);
+        this.checkKey(key);
         for (int i = 0; i < this.size; i++) {
             if (this.pairs[i].key == key || (this.pairs[i].key != null &&
                     this.pairs[i].key.equals(key))) {
@@ -91,7 +91,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public V remove(K key) {
-        checkKey(key);
+        this.checkKey(key);
         V temp = null;
         if (this.pairs[this.size - 1].key == key || (this.pairs[this.size - 1].key != null && 
                 this.pairs[this.size - 1].key.equals(key))) {
