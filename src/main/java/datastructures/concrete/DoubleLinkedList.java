@@ -167,8 +167,8 @@ public class DoubleLinkedList<T> implements IList<T> {
                 temp.prev = current.prev;
                 temp.next = current;
                 current.prev = temp;
-                temp.prev.next = temp;
-            }
+                temp.prev.next = temp; 
+            } 
             this.size++;
         }
     }
@@ -203,6 +203,16 @@ public class DoubleLinkedList<T> implements IList<T> {
         this.size--;
         return temp;
     }
+    
+//    /*
+//     * return node at given index in efficient way
+//     */
+//    private Node<T> frontOrBack(int index) {
+//        if (index <= this.size / 2 + (this.size % 2)) {
+//            return findNode(this.front, index);
+//        }
+//        return findNode(this.back, index);
+//    }
 
     /*
      * return the index of the first occurrence of given item passed in as
