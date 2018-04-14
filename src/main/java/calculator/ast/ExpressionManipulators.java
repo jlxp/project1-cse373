@@ -248,20 +248,25 @@ public class ExpressionManipulators {
      */
     public static AstNode plot(Environment env, AstNode node) {
         assertNodeMatches(node, "plot", 5);
-        IList<AstNode> list = new DoubleLinkedList<>();
-        list.add(node.getChildren().get(0));
-        AstNode test = new AstNode("toDouble", list);
-        handleToDouble(env, test);
+        System.out.println(node.getChildren().get(1).getName());
+        System.out.println(node.getChildren().get(2).getNumericValue());
+        System.out.println(node.getChildren().get(3).getNumericValue());
+        System.out.println(node.getChildren().get(4).getNumericValue());
         
+        handleToDouble(env, node.getChildren().get(0));
         
         // later on expressions
         if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
+            System.out.println(node.getChildren().get(1).getName());
             throw new EvaluationError("wrong var");
         }
+       
         if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
+            System.out.println(node.getChildren().get(3).getNumericValue());
             throw new EvaluationError("min > max");
         }
         if(node.getChildren().get(4).getNumericValue() <= 0.0) {
+            System.out.println(node.getChildren().get(4).getNumericValue());
             throw new EvaluationError("wrong step");
         }
         //testPlot(env.getVariables(), node.getChildren().get(0));
@@ -283,34 +288,47 @@ public class ExpressionManipulators {
         return new AstNode(1);
     }
     
-    private static double testPlot(IDictionary<String, AstNode> variables, AstNode node) {
+    private static boolean testPlot(IDictionary<String, AstNode> variables, AstNode node) {
         if (node.isNumber()) {
-            return node.getNumericValue();
-        } else if (node.isVariable()) {
+            return false;
+        }  else if (node.isVariable()) {
             if (variables.containsKey(node.getName())) {
-                return testPlot(variables, variables.get(node.getName()));
+                AstNode temp = variables.get(node.getName());
+                if (temp.isOperation()) {
+                    return testPlot(variables, temp); 
+                } else {
+                    return false;
+                }
+            } else {
+                
             }
-            return node.getNumericValue(); // throw errorrrr
-        } else{
+            
+        } else {
             // You may assume the expression node has the correct number of children.
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
             String basicOperators = "+-*/^";
-            if (basicOperators.contains(name) || name.equals("negate")) {
-                double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
-                double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
-                if (name.equals("negate")) {
-                    return -(operationHelper(name, valueLeft, valueRight));
+            if (basicOperators.contains(name)) {
+                AstNode left = testPlot(variables, node.getChildren().get(0));
+                AstNode right = testPlot(variables, node.getChildren().get(1));
+                if (left.isNumber() && right.isNumber()) {
+                    node = new AstNode(operationHelper(name, left.getNumericValue(), right.getNumericValue()));
                 } else {
-                    return operationHelper(name, valueLeft, valueRight);
+                    IList<AstNode> list = new DoubleLinkedList<>();
+                    list.add(left);
+                    list.add(right);
+                    node = new AstNode(name, list);
                 }
-            } else if (name.equals("sin") || name.equals("cos")){
-                double value = toDoubleHelper(variables, node.getChildren().get(0));
-                return trigHelper(name, value);
+            } else if (name.equals("sin") || name.equals("cos") || name.equals("negate")){
+                AstNode child = testPlot(variables, node.getChildren().get(0));
+                IList<AstNode> children = new DoubleLinkedList<>();
+                children.add(child);
+                node = new AstNode(name, children); 
             } else {
                 throw new EvaluationError("rip");
             }
         } 
+        return node;
     }
 }
