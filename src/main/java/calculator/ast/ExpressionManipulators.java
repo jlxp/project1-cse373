@@ -161,7 +161,6 @@ public class ExpressionManipulators {
 
         assertNodeMatches(node, "simplify", 1);
         AstNode exprToConvert = node.getChildren().get(0);
- //       node = simplifyHelper(env.getVariables(), exprToConvert);
         return simplifyHelper(env.getVariables(), exprToConvert);
     }
     
@@ -176,7 +175,7 @@ public class ExpressionManipulators {
                 } else {
                     node = new AstNode(temp.getNumericValue());
                 }
-            }
+            } 
             return node;
         } else {
             String name = node.getName();
@@ -249,10 +248,29 @@ public class ExpressionManipulators {
      */
     public static AstNode plot(Environment env, AstNode node) {
         assertNodeMatches(node, "plot", 5);
-
-        // TODO: Your code here
-        throw new NotYetImplementedException();
-
+        IList<AstNode> list = new DoubleLinkedList<>();
+        list.add(node.getChildren().get(0));
+        AstNode test = new AstNode("toDouble", list);
+        handleToDouble(env, test);
+        
+        
+        // later on expressions
+        if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
+            throw new EvaluationError("wrong var");
+        }
+        if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
+            throw new EvaluationError("min > max");
+        }
+        if(node.getChildren().get(4).getNumericValue() <= 0.0) {
+            throw new EvaluationError("wrong step");
+        }
+        //testPlot(env.getVariables(), node.getChildren().get(0));
+      
+        // throws error for unknown ??
+        
+        
+        // calculate!
+        
         // Note: every single function we add MUST return an
         // AST node that your "simplify" function is capable of handling.
         // However, your "simplify" function doesn't really know what to do
@@ -262,6 +280,37 @@ public class ExpressionManipulators {
         //
         // When working on this method, you should uncomment the following line:
         //
-        // return new AstNode(1);
+        return new AstNode(1);
+    }
+    
+    private static double testPlot(IDictionary<String, AstNode> variables, AstNode node) {
+        if (node.isNumber()) {
+            return node.getNumericValue();
+        } else if (node.isVariable()) {
+            if (variables.containsKey(node.getName())) {
+                return testPlot(variables, variables.get(node.getName()));
+            }
+            return node.getNumericValue(); // throw errorrrr
+        } else{
+            // You may assume the expression node has the correct number of children.
+            // If you wish to make your code more robust, you can also use the provided
+            // "assertNodeMatches" method to verify the input is valid.
+            String name = node.getName();
+            String basicOperators = "+-*/^";
+            if (basicOperators.contains(name) || name.equals("negate")) {
+                double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
+                double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
+                if (name.equals("negate")) {
+                    return -(operationHelper(name, valueLeft, valueRight));
+                } else {
+                    return operationHelper(name, valueLeft, valueRight);
+                }
+            } else if (name.equals("sin") || name.equals("cos")){
+                double value = toDoubleHelper(variables, node.getChildren().get(0));
+                return trigHelper(name, value);
+            } else {
+                throw new EvaluationError("rip");
+            }
+        } 
     }
 }
