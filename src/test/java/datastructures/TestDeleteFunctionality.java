@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestDeleteFunctionality extends TestDoubleLinkedList {
+   
     @Test(timeout=SECOND)
     public void basicTestDelete() {
         IList<String> list = this.makeBasicList();
@@ -34,12 +35,32 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     }
     
     @Test(timeout=SECOND)
+    public void basicTestDelete2() {
+        IList<String> list = this.makeBasicList();
+        list.add("d");
+        String temp = list.delete(2); 
+        assertListMatches(new String[] {"a", "b", "d"}, list);
+        assertEquals("c", temp); 
+        assertEquals(3, list.size());
+    }
+    
+    @Test(timeout=SECOND)
     public void testDeleteOnFront() {
         IList<String> list = makeBasicList();
         
         String temp = list.delete(0);
         assertListMatches(new String[] {"b", "c"}, list);
         assertEquals("a", temp); 
+        assertEquals(2, list.size());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testDeleteOnBack() {
+        IList<String> list = makeBasicList();
+        
+        String temp = list.delete(list.size() - 1);
+        assertListMatches(new String[] {"a", "b"}, list);
+        assertEquals("c", temp); 
         assertEquals(2, list.size());
     }
     

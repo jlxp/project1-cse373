@@ -107,11 +107,6 @@ public class DoubleLinkedList<T> implements IList<T> {
         } else {
             return findNode(this.back, index).data;
         }
-        /*
-        } else {
-            return findNode(this.front, index).data;
-        }
-        */
     }
     
     /*
@@ -224,22 +219,6 @@ public class DoubleLinkedList<T> implements IList<T> {
             current.prev = null;
             current.next = null;
         }
-        /*
-            Node<T> current = findNode(this.front, index);
-            temp = current.data;
-            current.prev.next = current.next;
-            current.next.prev = current.prev;
-            current.next = null;
-            current.prev = null;
-        } else {
-            Node<T> current = findNode(this.back, index);
-            temp = current.data;
-            current.next.prev = current.prev;
-            current.prev.next = current.next;
-            current.prev = null;
-            current.next = null;
-        }
-        */ 
         this.size--;
         return temp;
     }

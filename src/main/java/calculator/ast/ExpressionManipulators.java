@@ -3,6 +3,7 @@ package calculator.ast;
 import calculator.interpreter.Environment;
 import calculator.errors.EvaluationError;
 import datastructures.interfaces.IDictionary;
+import datastructures.interfaces.IList;
 import misc.exceptions.NotYetImplementedException;
 
 /**
@@ -69,13 +70,8 @@ public class ExpressionManipulators {
     private static double toDoubleHelper(IDictionary<String, AstNode> variables, AstNode node) {
         // There are three types of nodes, so we have three cases. 
         if (node.isNumber()) {
-            // TODO: your code here
             return node.getNumericValue();
         } else if (node.isVariable()) {
-            // TODO: your code here
-            // if variable is defined then get that numberrr
-            // if not then just return the variable
-            // how do u know that variable is defined?
             if (variables.containsKey(node.getName())) {
                 return variables.get(node.getName()).getNumericValue();
             } else {
@@ -86,9 +82,52 @@ public class ExpressionManipulators {
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
-
-            node.getChildren();
-            throw new NotYetImplementedException();
+            String basicOperators = "+-*/^";
+            if (basicOperators.contains(name)) {
+                double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
+                double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
+                return operationHelper(name, valueLeft, valueRight);
+            } else if (name.equals("negate")) {
+                double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
+                double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
+                return -(operationHelper(name, valueLeft, valueRight));
+            } else {
+                double value = toDoubleHelper(variables, node.getChildren().get(0));
+                return trigHelper(name, value);
+            }
+            
+            // recurse to get the values i.e. base cases
+            // test and save what the operation is "name"
+            // call the operation helper
+            // return result from operation helper up to first method
+//            IList<AstNode> children = node.getChildren();
+            // return left  Operation  right;
+            // return operation(value);
+        }
+    }
+    
+    /**TODO Add comment*/
+    private static double trigHelper(String name, double value) {
+        if (name.equals("sin")) {
+            return Math.sin(value);
+        } else {
+            return Math.cos(value);
+        }
+    }
+    
+    
+    /**TODO Add comment*/
+    private static double operationHelper(String name, double left, double right) {
+        if (name.equals("+")) {
+            return left + right;
+        } else if (name.equals("-")) {
+            return left - right;
+        } else if (name.equals("*" )) {
+            return left * right;
+        } else if (name.equals("/")) {
+            return left / right;
+        } else {
+            return Math.pow(left, right);
         }
     }
 
