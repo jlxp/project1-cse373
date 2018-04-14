@@ -128,11 +128,9 @@ public class DoubleLinkedList<T> implements IList<T> {
             } else if (index == this.size - 1) {
                 this.remove();
                 this.add(item);
-            } else {
-                Node<T> temp = new Node<T>(item);
+            } else {                
                 Node<T> current = this.findNode(index);
-                temp.prev = current.prev;
-                temp.next = current.next; 
+                Node<T> temp = new Node<T>(current.prev, item, current.next);
                 current.prev.next = temp;
                 current.next.prev = temp;
                 current.prev = null;

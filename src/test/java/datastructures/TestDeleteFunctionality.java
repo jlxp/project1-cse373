@@ -97,22 +97,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
             fail("Expected Out of Bounds Exception");
         } catch (IndexOutOfBoundsException ex) {
             // do nothing
-        }   
-        
-        
+        }          
     }   
-    /*
-     * It is borrowed from TestDoubleLinkedList of file
-     * create a simple list
-     * @see datastructures.TestDoubleLinkedList#makeBasicList()
-     */
-    protected IList<String> makeBasicList() {
-        IList<String> list = new DoubleLinkedList<>();
 
-        list.add("a");
-        list.add("b");
-        list.add("c");
-
-        return list;
-    }
 }

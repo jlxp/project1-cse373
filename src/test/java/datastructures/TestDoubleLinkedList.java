@@ -99,8 +99,12 @@ public class TestDoubleLinkedList extends BaseTest {
         int initSize = list.size();
         list.set(1, "d");
         
+        list.add("e");
+        list.add("f");
+        list.set(4, "z");
+        assertEquals("z", list.get(4));
         assertEquals("d", list.get(1));
-        assertEquals(initSize, list.size());
+        assertEquals(initSize+2, list.size());
     }
     
     @Test(timeout=SECOND)
