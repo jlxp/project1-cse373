@@ -258,6 +258,17 @@ public class ExpressionManipulators {
         IList<AstNode> resultList = new DoubleLinkedList<>();
         AstNode result = new AstNode("", resultList);
         
+        
+        
+        double currentX = node.getChildren().get(2).getNumericValue();
+        double currentY;
+        while (currentX <= node.getChildren().get(3).getNumericValue()) {
+            
+            currentY = toDoubleHelper(env.getVariables(), node.getChildren().get(0));
+            currentX += node.getChildren().get(4).getNumericValue();
+        }
+        
+        
         // calculate!
         
         // Note: every single function we add MUST return an
