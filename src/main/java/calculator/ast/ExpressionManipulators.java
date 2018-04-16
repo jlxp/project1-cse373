@@ -77,14 +77,17 @@ public class ExpressionManipulators {
             if (variables.containsKey(node.getName())) {
                 return toDoubleHelper(variables, variables.get(node.getName()));
             }
-            return node.getNumericValue(); // throw errorrrr
-        } else{
+            throw new EvaluationError("rip");
+            //return node.getNumericValue(); // throw errorrrr
+        } else {
             // You may assume the expression node has the correct number of children.
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
-            String basicOperators = "+-*/^";
-            if (basicOperators.contains(name) || name.equals("negate")) {
+            if (name.equals("sin") || name.equals("cos")){
+                double value = toDoubleHelper(variables, node.getChildren().get(0));
+                return trigHelper(name, value);
+            } else {
                 double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
                 double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
                 if (name.equals("negate")) {
@@ -92,21 +95,19 @@ public class ExpressionManipulators {
                 } else {
                     return operationHelper(name, valueLeft, valueRight);
                 }
-            } else if (name.equals("sin") || name.equals("cos")){
-                double value = toDoubleHelper(variables, node.getChildren().get(0));
-                return trigHelper(name, value);
-            } else {
-                throw new EvaluationError("rip");
             }
         } 
+        
     }
     
     /**TODO Add comment*/
     private static double trigHelper(String name, double value) {
         if (name.equals("sin")) {
             return Math.sin(value);
-        } else {
+        } else if (name.equals("cos")){
             return Math.cos(value);
+        } else {
+            throw new EvaluationError("rip");
         }
     }
     
@@ -117,12 +118,14 @@ public class ExpressionManipulators {
             return left + right;
         } else if (name.equals("-")) {
             return left - right;
-        } else if (name.equals("*" )) {
+        } else if (name.equals("*")) {
             return left * right;
         } else if (name.equals("/")) {
             return left / right;
-        } else {
+        } else if (name.equals("^")){
             return Math.pow(left, right);
+        } else {
+            throw new EvaluationError("rip");
         }
     }
 
@@ -179,7 +182,7 @@ public class ExpressionManipulators {
             return node;
         } else {
             String name = node.getName();
-            String basicOp = "+-*^"; 
+            String basicOp = "+-*^";  // tremaine say this is bad style and use if statements
             if (basicOp.contains(name)) {
                 AstNode left = simplifyHelper(variables, node.getChildren().get(0));
                 AstNode right = simplifyHelper(variables, node.getChildren().get(1));
@@ -197,7 +200,6 @@ public class ExpressionManipulators {
                 IList<AstNode> list = new DoubleLinkedList<>();
                 list.add(left);
                 list.add(right);
-                // return node
                 node = new AstNode(name, list);
             } else {
                 AstNode child = simplifyHelper(variables, node.getChildren().get(0));
@@ -205,9 +207,6 @@ public class ExpressionManipulators {
                 children.add(child);
                 node = new AstNode(name, children); 
             }
-            // if it's not basic operation
-            // recurse from its child
-            
             return node;
         }
     }
@@ -260,7 +259,7 @@ public class ExpressionManipulators {
             System.out.println(node.getChildren().get(1).getName());
             throw new EvaluationError("wrong var");
         }
-       
+        
         if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
             System.out.println(node.getChildren().get(3).getNumericValue());
             throw new EvaluationError("min > max");
