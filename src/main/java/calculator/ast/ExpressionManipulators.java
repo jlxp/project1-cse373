@@ -268,8 +268,8 @@ public class ExpressionManipulators {
             env.getVariables().put("x", new AstNode(currentX)); // x = 0
             IList<AstNode> list = new DoubleLinkedList<>();
             list.add(node.getChildren().get(0)); // adds current equation to list
-            AstNode doDouble = new AstNode("toDouble", list); // passes equation to toDouble it do calculation should return 0 on 0 cause 3 * 0 = 0
-            currentY = handleToDouble(env, doDouble).getNumericValue(); // toDouble might not be doing math right on 0 it returns 1
+            AstNode doDouble = new AstNode("toDouble", list); // passes equation to toDouble it do calculation
+            currentY = handleToDouble(env, doDouble).getNumericValue();
             resultY.add(currentY);
             resultX.add(currentX);
 
