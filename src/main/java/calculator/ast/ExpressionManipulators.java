@@ -84,17 +84,16 @@ public class ExpressionManipulators {
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
-            if (name.equals("sin") || name.equals("cos")){
+            if (name.equals("sin") || name.equals("cos") || name.equals("negate")) {
                 double value = toDoubleHelper(variables, node.getChildren().get(0));
                 return trigHelper(name, value);
-            } else {
+            } else if (name.equals("+") || name.equals("-") || name.equals("*") ||
+                    name.equals("/") || name.equals("^")) {
                 double valueLeft = toDoubleHelper(variables, node.getChildren().get(0));
                 double valueRight = toDoubleHelper(variables, node.getChildren().get(1));
-                if (name.equals("negate")) {
-                    return -(operationHelper(name, valueLeft, valueRight));
-                } else {
-                    return operationHelper(name, valueLeft, valueRight);
-                }
+                return operationHelper(name, valueLeft, valueRight);
+            } else {
+                throw new EvaluationError("nope");
             }
         } 
         
@@ -106,8 +105,8 @@ public class ExpressionManipulators {
             return Math.sin(value);
         } else if (name.equals("cos")){
             return Math.cos(value);
-        } else {
-            throw new EvaluationError("rip");
+        } else {// if (name.equals("negete")){
+            return -value;
         }
     }
     
@@ -122,10 +121,8 @@ public class ExpressionManipulators {
             return left * right;
         } else if (name.equals("/")) {
             return left / right;
-        } else if (name.equals("^")){
+        } else {//if (name.equals("^")){
             return Math.pow(left, right);
-        } else {
-            throw new EvaluationError("rip");
         }
     }
 
@@ -182,30 +179,27 @@ public class ExpressionManipulators {
             return node;
         } else {
             String name = node.getName();
-            String basicOp = "+-*^";  // tremaine say this is bad style and use if statements
-            if (basicOp.contains(name)) {
-                AstNode left = simplifyHelper(variables, node.getChildren().get(0));
-                AstNode right = simplifyHelper(variables, node.getChildren().get(1));
-                if (left.isNumber() && right.isNumber()) {
-                    node = new AstNode(operationHelper(name, left.getNumericValue(), right.getNumericValue()));
-                } else {
-                    IList<AstNode> list = new DoubleLinkedList<>();
-                    list.add(left);
-                    list.add(right);
-                    node = new AstNode(name, list);
-                }
-            } else if (name.equals("/")){
-                AstNode left = simplifyHelper(variables, node.getChildren().get(0));
-                AstNode right = simplifyHelper(variables, node.getChildren().get(1));
-                IList<AstNode> list = new DoubleLinkedList<>();
-                list.add(left);
-                list.add(right);
-                node = new AstNode(name, list);
+            if (name.equals("sin") || name.equals("cos") || name.equals("negate")){
+              AstNode child = simplifyHelper(variables, node.getChildren().get(0));
+              IList<AstNode> children = new DoubleLinkedList<>();
+              children.add(child);
+              node = new AstNode(name, children); 
             } else {
-                AstNode child = simplifyHelper(variables, node.getChildren().get(0));
-                IList<AstNode> children = new DoubleLinkedList<>();
-                children.add(child);
-                node = new AstNode(name, children); 
+              AstNode left = simplifyHelper(variables, node.getChildren().get(0));
+              AstNode right = simplifyHelper(variables, node.getChildren().get(1));
+              if (name.equals("/")) {
+                  IList<AstNode> list = new DoubleLinkedList<>();
+                  list.add(left);
+                  list.add(right);
+                  node = new AstNode(name, list);
+              } else if (left.isNumber() && right.isNumber()) {
+                  node = new AstNode(operationHelper(name, left.getNumericValue(), right.getNumericValue()));
+              } else {
+                  IList<AstNode> list = new DoubleLinkedList<>();
+                  list.add(left);
+                  list.add(right);
+                  node = new AstNode(name, list);
+              }
             }
             return node;
         }
@@ -247,16 +241,12 @@ public class ExpressionManipulators {
      */
     public static AstNode plot(Environment env, AstNode node) {
         assertNodeMatches(node, "plot", 5);
-        System.out.println(node.getChildren().get(1).getName());
-        System.out.println(node.getChildren().get(2).getNumericValue());
-        System.out.println(node.getChildren().get(3).getNumericValue());
-        System.out.println(node.getChildren().get(4).getNumericValue());
+        if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
+            throw new EvaluationError("wrong var");
+        }
         
+        testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
         
-        env.getVariables().put(node.getChildren().get(1).getName(), node.getChildren().get(1));
-        testPlotError(env.getVariables(), node.getChildren().get(0));
-        env.getVariables().remove(node.getChildren().get(1).getName());
-       
         if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
             System.out.println(node.getChildren().get(3).getNumericValue());
             throw new EvaluationError("min > max");
@@ -265,10 +255,8 @@ public class ExpressionManipulators {
             System.out.println(node.getChildren().get(4).getNumericValue());
             throw new EvaluationError("wrong step");
         }
-        //testPlot(env.getVariables(), node.getChildren().get(0));
-      
-        // throws error for unknown ??
-        
+        IList<AstNode> resultList = new DoubleLinkedList<>();
+        AstNode result = new AstNode("", resultList);
         
         // calculate!
         
@@ -284,22 +272,23 @@ public class ExpressionManipulators {
         return new AstNode(1);
     }
     
-    private static void testPlotError(IDictionary<String, AstNode> variables, AstNode node) {
-        if(node.isNumber()) {
+    private static void testPlotError(IDictionary<String, AstNode> variables, AstNode node, String var) {
+        if (node.isNumber()) {
             return;
-        } else if(node.isVariable()) {
-            if(variables.containsKey(node.getName())) {
+        } else if (node.isVariable()) {
+            if (node.getName().equals(var)) {//(variables.containsKey(node.getName())) {
                 return;
             } else {
                 throw new EvaluationError("not defined");
             }
         } else {
             String basicOp = "+-*/^"; 
-            if(basicOp.contains(node.getName())) {
-                testPlotError(variables, node.getChildren().get(0));
-                testPlotError(variables, node.getChildren().get(1));
-            } else if(node.getName().equals("negate") || node.getName().equals("sin") || node.getName().equals("cos")) {
-                testPlotError(variables, node.getChildren().get(0));
+            if (basicOp.contains(node.getName())) {
+                testPlotError(variables, node.getChildren().get(0), var);
+                testPlotError(variables, node.getChildren().get(1), var);
+            } else if (node.getName().equals("negate") || 
+                    node.getName().equals("sin") || node.getName().equals("cos")) {
+                testPlotError(variables, node.getChildren().get(0), var);
             } else {
                 throw new EvaluationError("not valid approach");
             }
