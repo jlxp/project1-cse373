@@ -248,11 +248,9 @@ public class ExpressionManipulators {
         testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
         
         if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
-            System.out.println(node.getChildren().get(3).getNumericValue());
             throw new EvaluationError("min > max");
         }
         if (node.getChildren().get(4).getNumericValue() <= 0.0) {
-            System.out.println(node.getChildren().get(4).getNumericValue());
             throw new EvaluationError("wrong step");
         }
         
@@ -267,20 +265,26 @@ public class ExpressionManipulators {
 //        AstNode equation = node.getChildren().get(0);
         
         while (currentX <= node.getChildren().get(3).getNumericValue()) {
-            env.getVariables().put("x", new AstNode(currentX));
+            env.getVariables().put("x", new AstNode(currentX)); // x = 0
             IList<AstNode> list = new DoubleLinkedList<>();
-            list.add(node.getChildren().get(0));
-            AstNode doDouble = new AstNode("toDouble", list);
-            currentY = handleToDouble(env, doDouble).getNumericValue();
-            currentX += node.getChildren().get(4).getNumericValue();
+            list.add(node.getChildren().get(0)); // adds current equation to list
+            AstNode doDouble = new AstNode("toDouble", list); // passes equation to toDouble it do calculation should return 0 on 0 cause 3 * 0 = 0
+            currentY = handleToDouble(env, doDouble).getNumericValue(); // toDouble might not be doing math right on 0 it returns 1
             resultY.add(currentY);
             resultX.add(currentX);
+
+            System.out.println("my X " + currentX + "my Y " + currentY); // prints out right calculations but now throws errors
+            
+            currentX += node.getChildren().get(4).getNumericValue();
             env.getVariables().remove("x");
 //            variables.put(node.getChildren().get(1).getName(), new AstNode(currentX));
 //            currentY = toDoubleHelper(variables, equation);
 //            currentX += step;
         }
-        
+        // Test case that throws error
+        /*calc.evaluate("c := 4"); <--Not finding these defined variables in the env.getVariables() this is what throws error
+        calc.evaluate("step := 0.25"); <--Not finding these defined variables in the env.getVariables()
+        calc.evaluate("plot(a^2 + c*a + c, a, -10, 10, step)");*/
         env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
         
         // 
