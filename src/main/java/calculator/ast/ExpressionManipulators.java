@@ -262,14 +262,19 @@ public class ExpressionManipulators {
         
         double currentX = node.getChildren().get(2).getNumericValue();
         double currentY;
+        double step = node.getChildren().get(4).getNumericValue();
+        IDictionary<String, AstNode> variables = env.getVariables();
+        AstNode equation = node.getChildren().get(0);
+        
         while (currentX <= node.getChildren().get(3).getNumericValue()) {
+            variables.put(node.getChildren().get(1).getName(), new AstNode(currentX));
+            currentY = toDoubleHelper(variables, equation);
             
-            currentY = toDoubleHelper(env.getVariables(), node.getChildren().get(0));
-            currentX += node.getChildren().get(4).getNumericValue();
+            currentX += step;
         }
         
         
-        // calculate!
+        // 
         
         // Note: every single function we add MUST return an
         // AST node that your "simplify" function is capable of handling.
