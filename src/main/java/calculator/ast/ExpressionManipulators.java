@@ -262,9 +262,9 @@ public class ExpressionManipulators {
     
         double currentX = node.getChildren().get(2).getNumericValue();
         double currentY;
-        double step = node.getChildren().get(4).getNumericValue();
-        IDictionary<String, AstNode> variables = env.getVariables();
-        AstNode equation = node.getChildren().get(0);
+//        double step = node.getChildren().get(4).getNumericValue();
+//        IDictionary<String, AstNode> variables = env.getVariables();
+//        AstNode equation = node.getChildren().get(0);
         
         while (currentX <= node.getChildren().get(3).getNumericValue()) {
             env.getVariables().put("x", new AstNode(currentX));
@@ -276,6 +276,9 @@ public class ExpressionManipulators {
             resultY.add(currentY);
             resultX.add(currentX);
             env.getVariables().remove("x");
+//            variables.put(node.getChildren().get(1).getName(), new AstNode(currentX));
+//            currentY = toDoubleHelper(variables, equation);
+//            currentX += step;
         }
         
         env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
