@@ -252,19 +252,16 @@ public class ExpressionManipulators {
         System.out.println(node.getChildren().get(3).getNumericValue());
         System.out.println(node.getChildren().get(4).getNumericValue());
         
-        handleToDouble(env, node.getChildren().get(0));
         
-        // later on expressions
-        if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
-            System.out.println(node.getChildren().get(1).getName());
-            throw new EvaluationError("wrong var");
-        }
-        
+        env.getVariables().put(node.getChildren().get(1).getName(), node.getChildren().get(1));
+        testPlotError(env.getVariables(), node.getChildren().get(0));
+        env.getVariables().remove(node.getChildren().get(1).getName());
+       
         if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
             System.out.println(node.getChildren().get(3).getNumericValue());
             throw new EvaluationError("min > max");
         }
-        if(node.getChildren().get(4).getNumericValue() <= 0.0) {
+        if (node.getChildren().get(4).getNumericValue() <= 0.0) {
             System.out.println(node.getChildren().get(4).getNumericValue());
             throw new EvaluationError("wrong step");
         }
@@ -287,47 +284,25 @@ public class ExpressionManipulators {
         return new AstNode(1);
     }
     
-    private static boolean testPlot(IDictionary<String, AstNode> variables, AstNode node) {
-        if (node.isNumber()) {
-            return false;
-        }  else if (node.isVariable()) {
-            if (variables.containsKey(node.getName())) {
-                AstNode temp = variables.get(node.getName());
-                if (temp.isOperation()) {
-                    return testPlot(variables, temp); 
-                } else {
-                    return false;
-                }
+    private static void testPlotError(IDictionary<String, AstNode> variables, AstNode node) {
+        if(node.isNumber()) {
+            return;
+        } else if(node.isVariable()) {
+            if(variables.containsKey(node.getName())) {
+                return;
             } else {
-                
+                throw new EvaluationError("not defined");
             }
-            
         } else {
-            // You may assume the expression node has the correct number of children.
-            // If you wish to make your code more robust, you can also use the provided
-            // "assertNodeMatches" method to verify the input is valid.
-            String name = node.getName();
-            String basicOperators = "+-*/^";
-            if (basicOperators.contains(name)) {
-                AstNode left = testPlot(variables, node.getChildren().get(0));
-                AstNode right = testPlot(variables, node.getChildren().get(1));
-                if (left.isNumber() && right.isNumber()) {
-                    node = new AstNode(operationHelper(name, left.getNumericValue(), right.getNumericValue()));
-                } else {
-                    IList<AstNode> list = new DoubleLinkedList<>();
-                    list.add(left);
-                    list.add(right);
-                    node = new AstNode(name, list);
-                }
-            } else if (name.equals("sin") || name.equals("cos") || name.equals("negate")){
-                AstNode child = testPlot(variables, node.getChildren().get(0));
-                IList<AstNode> children = new DoubleLinkedList<>();
-                children.add(child);
-                node = new AstNode(name, children); 
+            String basicOp = "+-*/^"; 
+            if(basicOp.contains(node.getName())) {
+                testPlotError(variables, node.getChildren().get(0));
+                testPlotError(variables, node.getChildren().get(1));
+            } else if(node.getName().equals("negate") || node.getName().equals("sin") || node.getName().equals("cos")) {
+                testPlotError(variables, node.getChildren().get(0));
             } else {
-                throw new EvaluationError("rip");
+                throw new EvaluationError("not valid approach");
             }
-        } 
-        return node;
+        }
     }
 }
