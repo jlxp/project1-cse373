@@ -255,19 +255,26 @@ public class ExpressionManipulators {
             System.out.println(node.getChildren().get(4).getNumericValue());
             throw new EvaluationError("wrong step");
         }
-        IList<AstNode> resultList = new DoubleLinkedList<>();
-        AstNode result = new AstNode("", resultList);
         
         
-        
+        IList<Double> resultX = new DoubleLinkedList<>();
+        IList<Double> resultY = new DoubleLinkedList<>();
+    
         double currentX = node.getChildren().get(2).getNumericValue();
         double currentY;
         while (currentX <= node.getChildren().get(3).getNumericValue()) {
-            
-            currentY = toDoubleHelper(env.getVariables(), node.getChildren().get(0));
+            env.getVariables().put("x", new AstNode(currentX));
+            IList<AstNode> list = new DoubleLinkedList<>();
+            list.add(node.getChildren().get(0));
+            AstNode doDouble = new AstNode("toDouble", list);
+            currentY = handleToDouble(env, doDouble).getNumericValue();
             currentX += node.getChildren().get(4).getNumericValue();
+            resultY.add(currentY);
+            resultX.add(currentX);
+            env.getVariables().remove("x");
         }
         
+        env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
         
         // calculate!
         
