@@ -282,12 +282,11 @@ public class ExpressionManipulators {
 //            currentX += step;
         }
         // Test case that throws error
-        /*calc.evaluate("c := 4"); <--Not finding these defined variables in the env.getVariables() this is what throws error
-        calc.evaluate("step := 0.25"); <--Not finding these defined variables in the env.getVariables()
+        /*calc.evaluate("c := 4");
+        calc.evaluate("step := 0.25");
         calc.evaluate("plot(a^2 + c*a + c, a, -10, 10, step)");*/
+        //                              0, 1,  2,  3,  4
         env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
-        
-        // 
         
         // Note: every single function we add MUST return an
         // AST node that your "simplify" function is capable of handling.
@@ -305,7 +304,7 @@ public class ExpressionManipulators {
         if (node.isNumber()) {
             return;
         } else if (node.isVariable()) {
-            if (node.getName().equals(var)) {//(variables.containsKey(node.getName())) {
+            if (node.getName().equals(var) || variables.containsKey(node.getName())) {
                 return;
             } else {
                 throw new EvaluationError("not defined");
