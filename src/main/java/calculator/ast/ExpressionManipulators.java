@@ -245,15 +245,16 @@ public class ExpressionManipulators {
             throw new EvaluationError("wrong var");
         }
         
-        testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
-        
+        System.out.println(node.getChildren().get(2).isNumber() + " " + node.getChildren().get(3).isNumber());
         if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
             throw new EvaluationError("min > max");
         }
+        
         if (node.getChildren().get(4).getNumericValue() <= 0.0) {
             throw new EvaluationError("wrong step");
         }
-        
+        testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
+
         
         IList<Double> resultX = new DoubleLinkedList<>();
         IList<Double> resultY = new DoubleLinkedList<>();
@@ -265,7 +266,7 @@ public class ExpressionManipulators {
 //        AstNode equation = node.getChildren().get(0);
         
         while (currentX <= node.getChildren().get(3).getNumericValue()) {
-            env.getVariables().put("x", new AstNode(currentX)); // x = 0
+            env.getVariables().put(node.getChildren().get(1).getName(), new AstNode(currentX)); // x = 0
             IList<AstNode> list = new DoubleLinkedList<>();
             list.add(node.getChildren().get(0)); // adds current equation to list
             AstNode doDouble = new AstNode("toDouble", list); // passes equation to toDouble it do calculation
@@ -273,10 +274,10 @@ public class ExpressionManipulators {
             resultY.add(currentY);
             resultX.add(currentX);
 
-            System.out.println("my X " + currentX + "my Y " + currentY); // prints out right calculations but now throws errors
+            System.out.println("my X " + currentX + "  " + "my Y " + currentY); // prints out right calculations but now throws errors
             
             currentX += node.getChildren().get(4).getNumericValue();
-            env.getVariables().remove("x");
+            env.getVariables().remove(node.getChildren().get(1).getName());
 //            variables.put(node.getChildren().get(1).getName(), new AstNode(currentX));
 //            currentY = toDoubleHelper(variables, equation);
 //            currentX += step;

@@ -169,7 +169,7 @@ public class TestCalculator extends BaseTest {
                 calc.evaluate("(1 + 1) * (a + 2 * (1 + 1))"));
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout=1000 * SECOND)
     public void testPlotInputs() {
         FakeImageDrawer drawer = new FakeImageDrawer();
 
