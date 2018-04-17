@@ -241,31 +241,87 @@ public class ExpressionManipulators {
      */
     public static AstNode plot(Environment env, AstNode node) {
         assertNodeMatches(node, "plot", 5);
+        testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
+        
         if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
             throw new EvaluationError("wrong var");
         }
+//        if (!node.getChildren().get(2).isNumber() || !node.getChildren().get(3).isNumber() || !node.getChildren().get(4).isNumber()) {
+//            throw new EvaluationError("NaN");
+//        }
+//        System.out.println();
+//        System.out.println(node.getChildren().get(2).isNumber() + " " + node.getChildren().get(3).isNumber());
+//        System.out.println("2 number? " + node.getChildren().get(2).isNumber());
+//        System.out.println("2 variable? " + node.getChildren().get(2).isVariable());
+//        System.out.println("2 operation? " + node.getChildren().get(2).isOperation());
+//        System.out.println();
+//        System.out.println("3 number? " + node.getChildren().get(3).isNumber());
+//        System.out.println("3 variable? " + node.getChildren().get(3).isVariable());
+//        System.out.println("3 operation? " + node.getChildren().get(3).isOperation());
+        double two = -1;
+        if (node.getChildren().get(2).isOperation()) {
+            System.out.println("2 op " + node.getChildren().get(2).getName());
+            two = toDoubleHelper(env.getVariables(), node.getChildren().get(2));
+        } else if (node.getChildren().get(2).isVariable()) {
+            if (env.getVariables().containsKey(node.getChildren().get(2).getName())) {
+                two = env.getVariables().get(node.getChildren().get(2).getName()).getNumericValue();
+            }
+            // throw exception
+            System.out.println("2 var " + node.getChildren().get(2).getName());
+            throw new EvaluationError("");
+        } else {
+            two = node.getChildren().get(2).getNumericValue();
+        }
         
-        System.out.println(node.getChildren().get(2).isNumber() + " " + node.getChildren().get(3).isNumber());
-        if (node.getChildren().get(2).getNumericValue() > node.getChildren().get(3).getNumericValue()) {
+        double three = -1;
+        if (node.getChildren().get(3).isOperation()) {
+            System.out.println("3 op " + node.getChildren().get(3).getName());
+            three = toDoubleHelper(env.getVariables(), node.getChildren().get(3));
+        } else if (node.getChildren().get(3).isVariable()) {
+            if (env.getVariables().containsKey(node.getChildren().get(3).getName())) {
+                three = env.getVariables().get(node.getChildren().get(3).getName()).getNumericValue();
+            }
+            // throw exception
+            System.out.println("3 var " + node.getChildren().get(3).getName());
+            throw new EvaluationError("");
+        } else {
+            three = node.getChildren().get(3).getNumericValue();
+        }
+        
+        if (two > three) {
             throw new EvaluationError("min > max");
         }
         
-        if (node.getChildren().get(4).getNumericValue() <= 0.0) {
+        AstNode four = null;
+        if (node.getChildren().get(4).isOperation()) {
+            System.out.println("4 op " + node.getChildren().get(4).getName());
+            four = simplifyHelper(env.getVariables(), node.getChildren().get(4));
+        } else if (node.getChildren().get(4).isVariable()) {
+            if (env.getVariables().containsKey(node.getChildren().get(4).getName())) { // it should find the key but it is not. just before the test code they put in this key of step
+                four = env.getVariables().get(node.getChildren().get(4).getName());
+            }
+//            System.out.println("4 var " + node.getChildren().get(4).getName());
+//            // throw exception
+//            throw new EvaluationError("var not found");
+        } else {
+            four = node.getChildren().get(4);
+        }
+        System.out.println(four.getNumericValue());
+        if (four.getNumericValue() <= 0.0) {
             throw new EvaluationError("wrong step");
         }
-        testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
 
         
         IList<Double> resultX = new DoubleLinkedList<>();
         IList<Double> resultY = new DoubleLinkedList<>();
     
-        double currentX = node.getChildren().get(2).getNumericValue();
+        double currentX = two;
         double currentY;
 //        double step = node.getChildren().get(4).getNumericValue();
 //        IDictionary<String, AstNode> variables = env.getVariables();
 //        AstNode equation = node.getChildren().get(0);
         
-        while (currentX <= node.getChildren().get(3).getNumericValue()) {
+        while (currentX <= three) {
             env.getVariables().put(node.getChildren().get(1).getName(), new AstNode(currentX)); // x = 0
             IList<AstNode> list = new DoubleLinkedList<>();
             list.add(node.getChildren().get(0)); // adds current equation to list
@@ -276,7 +332,7 @@ public class ExpressionManipulators {
 
             System.out.println("my X " + currentX + "  " + "my Y " + currentY); // prints out right calculations but now throws errors
             
-            currentX += node.getChildren().get(4).getNumericValue();
+            currentX += four.getNumericValue();
             env.getVariables().remove(node.getChildren().get(1).getName());
 //            variables.put(node.getChildren().get(1).getName(), new AstNode(currentX));
 //            currentY = toDoubleHelper(variables, equation);
