@@ -252,7 +252,7 @@ public class TestArrayDictionary extends BaseTest {
 
     @Test(timeout=5 * SECOND)
     public void testAddRemoveMany() {
-        int cap = 15000;
+        int cap = 25000;//15000;
         IDictionary<Integer, Integer> dict = new ArrayDictionary<>();
 
         for (int repeats = 0; repeats < 3; repeats++) {

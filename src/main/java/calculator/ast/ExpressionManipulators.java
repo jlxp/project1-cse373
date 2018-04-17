@@ -246,57 +246,17 @@ public class ExpressionManipulators {
         if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
             throw new EvaluationError("wrong var");
         }
-//        System.out.println();
-//        System.out.println(node.getChildren().get(2).isNumber() + " " + node.getChildren().get(3).isNumber());
-//        System.out.println("2 number? " + node.getChildren().get(2).isNumber());
-//        System.out.println("2 variable? " + node.getChildren().get(2).isVariable());
-//        System.out.println("2 operation? " + node.getChildren().get(2).isOperation());
-//        System.out.println();
-//        System.out.println("3 number? " + node.getChildren().get(3).isNumber());
-//        System.out.println("3 variable? " + node.getChildren().get(3).isVariable());
-//        System.out.println("3 operation? " + node.getChildren().get(3).isOperation());
-        double two = -1;
-        if (node.getChildren().get(2).isOperation()) {
-            two = toDoubleHelper(env.getVariables(), node.getChildren().get(2));
-        } else if (node.getChildren().get(2).isVariable()) {
-            if (env.getVariables().containsKey(node.getChildren().get(2).getName())) {
-                two = env.getVariables().get(node.getChildren().get(2).getName()).getNumericValue();
-            }
-            throw new EvaluationError("");
-        } else {
-            two = node.getChildren().get(2).getNumericValue();
-        }
-        
-        double three = -1;
-        if (node.getChildren().get(3).isOperation()) {
-            three = toDoubleHelper(env.getVariables(), node.getChildren().get(3));
-        } else if (node.getChildren().get(3).isVariable()) {
-            if (env.getVariables().containsKey(node.getChildren().get(3).getName())) {
-                three = env.getVariables().get(node.getChildren().get(3).getName()).getNumericValue();
-            }
-            throw new EvaluationError("");
-        } else {
-            three = node.getChildren().get(3).getNumericValue();
-        }
-        
+
+        double two = test(env, node, 2);
+        double three = test(env, node, 3);
         if (two > three) {
             throw new EvaluationError("min > max");
         }
-        
-        AstNode four = null;
-        if (node.getChildren().get(4).isOperation()) {
-            four = simplifyHelper(env.getVariables(), node.getChildren().get(4));
-        } else if (node.getChildren().get(4).isVariable()) {
-            if (env.getVariables().containsKey(node.getChildren().get(4).getName())) { // it should find the key but it is not. just before the test code they put in this key of step
-                four = env.getVariables().get(node.getChildren().get(4).getName());
-            }
-        } else {
-            four = node.getChildren().get(4);
-        }
-        if (four.getNumericValue() <= 0.0) {
+
+        double four = test(env, node, 4);
+        if (four <= 0.0) {
             throw new EvaluationError("wrong step");
         }
-
         
         IList<Double> resultX = new DoubleLinkedList<>();
         IList<Double> resultY = new DoubleLinkedList<>();
@@ -305,15 +265,14 @@ public class ExpressionManipulators {
         double currentY;
         
         while (currentX <= three) {
-            env.getVariables().put(node.getChildren().get(1).getName(), new AstNode(currentX)); // x = 0
+            env.getVariables().put(node.getChildren().get(1).getName(), new AstNode(currentX));
             IList<AstNode> list = new DoubleLinkedList<>();
-            list.add(node.getChildren().get(0)); // adds current equation to list
-            AstNode doDouble = new AstNode("toDouble", list); // passes equation to toDouble it do calculation
+            list.add(node.getChildren().get(0));
+            AstNode doDouble = new AstNode("toDouble", list);
             currentY = handleToDouble(env, doDouble).getNumericValue();
             resultY.add(currentY);
             resultX.add(currentX);
-
-            currentX += four.getNumericValue();
+            currentX += four;
             env.getVariables().remove(node.getChildren().get(1).getName());
         }
         env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
@@ -330,6 +289,22 @@ public class ExpressionManipulators {
         return new AstNode(1);
     }
     
+    /*TODO add comment*/
+    private static double test(Environment env, AstNode node, int index) {
+        double result = -1;
+        if (node.getChildren().get(index).isOperation()) {
+            result = toDoubleHelper(env.getVariables(), node.getChildren().get(index));
+        } else if (node.getChildren().get(index).isVariable()) {
+            if (env.getVariables().containsKey(node.getChildren().get(index).getName())) {
+                result = env.getVariables().get(node.getChildren().get(index).getName()).getNumericValue();
+            }
+        } else {
+            result = node.getChildren().get(index).getNumericValue();
+        }
+        return result;
+    }
+    
+    /*TODO add comment*/
     private static void testPlotError(IDictionary<String, AstNode> variables, AstNode node, String var) {
         if (node.isNumber()) {
             return;

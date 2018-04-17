@@ -35,12 +35,11 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public V get(K key) {
-        this.checkKey(key);
-        for (int i = 0; i < this.size; i++) {
-            if (this.pairs[i].key == key || (this.pairs[i].key != null &&
-                    this.pairs[i].key.equals(key))) {
-                return (V) this.pairs[i].value;
-            }
+        int index = indexOf(key);
+        this.checkKey(index);
+        if (this.pairs[index].key == key || (this.pairs[index].key != null &&
+                this.pairs[index].key.equals(key))) {
+            return (V) this.pairs[index].value;
         }
         return null; 
     }
@@ -49,8 +48,8 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      * @throws NoSuchKeyException if there is no key that matches with the key
      * passed in as a parameter
      */
-    private void checkKey(K key) {
-        if (!this.containsKey(key)) {
+    private void checkKey(int index) {
+        if (index == -1) {
             throw new NoSuchKeyException("dictionary does not contain key");
         }
     }
@@ -62,7 +61,8 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        if (!this.containsKey(key)) {
+        int index = indexOf(key);
+        if (index == -1) {
             if (this.size < this.pairs.length) {
                 this.pairs[this.size] = new Pair<>(key, value);
             } else {
@@ -75,11 +75,9 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
             }
             this.size++;
         } else {
-            for (int i = 0; i < this.size; i++) {
-                if (this.pairs[i].key == key || (this.pairs[i].key != null && 
-                        this.pairs[i].key.equals(key))) {
-                    this.pairs[i] = new Pair<>(key, value);
-                }
+            if (this.pairs[index].key == key || (this.pairs[index].key != null && 
+                    this.pairs[index].key.equals(key))) {
+                this.pairs[index] = new Pair<>(key, value);
             }
         }
     }
@@ -91,20 +89,23 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public V remove(K key) {
-        this.checkKey(key);
+        int index = indexOf(key);
+        this.checkKey(index);
         V temp = null;
         if (this.pairs[this.size - 1].key == key || (this.pairs[this.size - 1].key != null && 
                 this.pairs[this.size - 1].key.equals(key))) {
             temp = this.pairs[this.size - 1].value;
             this.pairs[this.size - 1] = null;
+            this.size--;
+            return(V) temp;
         } else {
-            for (int i = 0; i < this.size - 1; i++) {
-                if (this.pairs[i].key == key || (this.pairs[i].key != null && 
-                        this.pairs[i].key.equals(key))) {
-                    temp = this.pairs[i].value;
-                    this.pairs[i] = this.pairs[this.size - 1];
-                    this.pairs[this.size - 1] = null;
-                }
+            if (this.pairs[index].key == key || (this.pairs[index].key != null && 
+                    this.pairs[index].key.equals(key))) {
+                temp = this.pairs[index].value;
+                this.pairs[index] = this.pairs[this.size - 1];
+                this.pairs[this.size - 1] = null;
+                this.size--;
+                return (V) temp;
             }
         }
         this.size--;
@@ -119,13 +120,21 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public boolean containsKey(K key) {
+        return indexOf(key) != -1;
+    }
+    
+    /*
+     * returns the index of a key passed in as a parameter
+     * if key is not found returns -1
+     */
+    private int indexOf(K key) {
         for (int i = 0; i < this.size; i++) {
             if (this.pairs[i].key == key || (this.pairs[i].key != null && 
                     this.pairs[i].key.equals(key))) {
-                return true; 
+                return i; 
             }
         }
-        return false;
+        return -1;
     }
 
     /*
