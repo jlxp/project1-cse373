@@ -5,7 +5,6 @@ import calculator.errors.EvaluationError;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
-//import misc.exceptions.NotYetImplementedException;
 
 /**
  * All of the public static methods in this class are given the exact same
@@ -97,9 +96,9 @@ public class ExpressionManipulators {
             return Math.sin(value);
         } else if (name.equals("cos")) {
             return Math.cos(value);
-        } else {// if (name.equals("negete")) {
+        } else {// when name equals negate
             return -value;
-        }
+        } // no statement for other op since spec says so
     }
 
     /**
@@ -116,9 +115,9 @@ public class ExpressionManipulators {
             return left * right;
         } else if (name.equals("/")) {
             return left / right;
-        } else {// if (name.equals("^")) {
+        } else { // when name equals ^
             return Math.pow(left, right);
-        }
+        } // no statement for other op since spec says so
     }
 
     /**
@@ -145,15 +144,6 @@ public class ExpressionManipulators {
      * NUM", or "NUM * NUM", simplify them.
      */
     public static AstNode handleSimplify(Environment env, AstNode node) {
-        // Try writing this one on your own!
-        // Hint 1: Your code will likely be structured roughly similarly
-        // to your "handleToDouble" method
-        // Hint 2: When you're implementing constant folding, you may want
-        // to call your "handleToDouble" method in some way
-        // Hint 3: When implementing your private pair, think carefully about
-        // when you should recurse. Do you recurse after simplifying
-        // the current level? Or before?
-
         assertNodeMatches(node, "simplify", 1);
         AstNode exprToConvert = node.getChildren().get(0);
         return simplifyHelper(env.getVariables(), exprToConvert);
@@ -267,16 +257,7 @@ public class ExpressionManipulators {
             env.getVariables().remove(node.getChildren().get(1).getName());
         }
         env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
-
-        // Note: every single function we add MUST return an
-        // AST node that your "simplify" function is capable of handling.
-        // However, your "simplify" function doesn't really know what to do
-        // with "plot" functions (and what is the "plot" function supposed to
-        // evaluate to anyways?) so we'll settle for just returning an
-        // arbitrary number.
-        //
-        // When working on this method, you should uncomment the following line:
-        //
+        
         return new AstNode(1);
     }
 
