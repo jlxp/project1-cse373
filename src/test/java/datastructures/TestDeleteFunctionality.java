@@ -89,6 +89,8 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         
         
     }
+    
+    @Test(timeout=SECOND)
     public void testDeleteLowerOOBException() {
         IList<String> list = this.makeBasicList();
         
@@ -98,6 +100,5 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         } catch (IndexOutOfBoundsException ex) {
             // do nothing
         }          
-    }   
-
+    }
 }
