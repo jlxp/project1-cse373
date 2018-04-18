@@ -9,6 +9,8 @@ import datastructures.interfaces.IList;
 
 import static org.junit.Assert.fail;
 
+import java.util.Iterator;
+
 /**
  * This class should contain all the tests you implement to verify that
  * your 'delete' method behaves as specified.
@@ -119,6 +121,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     @Test(timeout=SECOND)
     public void testNext() {
         IList<String> list = this.makeBasicList();
+        Iterator<String> iter = list.iterator();
         list.add("Joy");
         list.add("Jong");
         list.add("Tai Tea");
@@ -126,9 +129,9 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         list.add("Kim^2");
         list.delete(4);
         String[] arrList = new String[] {"a", "b", "c", "Joy", "Tai Tea", "Tremaine", "Kim^2"};
-        assertListMatches(arrList, list);
         for (int i = 0; i < list.size(); i++) {
-            assertEquals(arrList[i], list.get(i));
+            assertEquals(arrList[i], iter.next());
         }
+        
     }
 }
