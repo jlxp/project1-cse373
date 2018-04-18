@@ -101,4 +101,34 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
             // do nothing
         }          
     }
+    
+    @Test(timeout=SECOND)
+    public void testBackField() {
+        IList<String> list = this.makeBasicList();
+        int backIndex = list.size() - 1;
+        assertEquals("c", list.delete(list.size() - 1));
+        try {
+            list.delete(backIndex); // this varifies that the index was deleted
+            fail("Expected Out of Bounds Exception");
+        } catch (IndexOutOfBoundsException ex) {
+            // do nothing
+        }
+        assertEquals("b", list.remove()); // since remove always deletes from the back we check to make sure that back is set to b which would be the new back
+    }
+    
+    @Test(timeout=SECOND)
+    public void testNext() {
+        IList<String> list = this.makeBasicList();
+        list.add("Joy");
+        list.add("Jong");
+        list.add("Tai Tea");
+        list.add("Tremaine");
+        list.add("Kim^2");
+        list.delete(4);
+        String[] arrList = new String[] {"a", "b", "c", "Joy", "Tai Tea", "Tremaine", "Kim^2"};
+        assertListMatches(arrList, list);
+        for (int i = 0; i < list.size(); i++) {
+            assertEquals(arrList[i], list.get(i));
+        }
+    }
 }
