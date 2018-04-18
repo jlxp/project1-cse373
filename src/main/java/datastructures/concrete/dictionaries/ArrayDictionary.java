@@ -61,7 +61,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        int index = indexOf(key);
+        int index = this.indexOf(key);
         if (index == -1) {
             if (this.size < this.pairs.length) {
                 this.pairs[this.size] = new Pair<>(key, value);
@@ -89,7 +89,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
      */
     @Override
     public V remove(K key) {
-        int index = indexOf(key);
+        int index = this.indexOf(key);
         this.checkKey(index);
         V temp = null;
         if (this.pairs[this.size - 1].key == key || (this.pairs[this.size - 1].key != null && 
