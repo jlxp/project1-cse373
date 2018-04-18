@@ -46,7 +46,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     
     @Test(timeout=SECOND)
     public void testDeleteOnFront() {
-        IList<String> list = makeBasicList();
+        IList<String> list = this.makeBasicList();
         
         String temp = list.delete(0);
         assertListMatches(new String[] {"b", "c"}, list);
@@ -56,7 +56,7 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     
     @Test(timeout=SECOND)
     public void testDeleteOnBack() {
-        IList<String> list = makeBasicList();
+        IList<String> list = this.makeBasicList();
         
         String temp = list.delete(list.size() - 1);
         assertListMatches(new String[] {"a", "b"}, list);
