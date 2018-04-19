@@ -62,6 +62,7 @@ public class Calculator {
         this.specialFunctions.put("randomlyPick", ControlFlowManipulators::handleRandomlyPick);
         this.specialFunctions.put("if", ControlFlowManipulators::handleIf);
         this.specialFunctions.put("repeat", ControlFlowManipulators::handleRepeat);
+        this.specialFunctions.put("while", ControlFlowManipulators::handleWhile);
 
         this.precedenceMap.put("^", 1);
         this.precedenceMap.put("negate", 2);
