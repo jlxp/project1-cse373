@@ -115,7 +115,8 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         } catch (IndexOutOfBoundsException ex) {
             // do nothing
         }
-        assertEquals("b", list.remove()); // since remove always deletes from the back we check to make sure that back is set to b which would be the new back
+        assertEquals("b", list.remove()); 
+        // since remove always deletes from the back we check to make sure that back is set to b which would be the new back
     }
     
     @Test(timeout=SECOND)

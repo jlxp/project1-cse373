@@ -223,8 +223,10 @@ public class ExpressionManipulators {
     public static AstNode plot(Environment env, AstNode node) {
         assertNodeMatches(node, "plot", 5);
         testPlotError(env.getVariables(), node.getChildren().get(0), node.getChildren().get(1).getName());
-
-        if (env.getVariables().containsKey(node.getChildren().get(1).getName())) {
+        
+        AstNode var = node.getChildren().get(1); 
+        
+        if (env.getVariables().containsKey(var.getName())) {
             throw new EvaluationError("variable not defined");
         }
 
@@ -244,9 +246,9 @@ public class ExpressionManipulators {
 
         double currentX = varMin;
         double currentY;
-
+        
         while (currentX <= varMax) {
-            env.getVariables().put(node.getChildren().get(1).getName(), new AstNode(currentX));
+            env.getVariables().put(var.getName(), new AstNode(currentX));
             IList<AstNode> list = new DoubleLinkedList<>();
             list.add(node.getChildren().get(0));
             AstNode doDouble = new AstNode("toDouble", list);
@@ -254,7 +256,7 @@ public class ExpressionManipulators {
             resultY.add(currentY);
             resultX.add(currentX);
             currentX += step;
-            env.getVariables().remove(node.getChildren().get(1).getName());
+            env.getVariables().remove(var.getName());
         }
         env.getImageDrawer().drawScatterPlot("", "", "", resultX, resultY);
         

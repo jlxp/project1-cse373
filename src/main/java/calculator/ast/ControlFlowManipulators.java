@@ -1,8 +1,11 @@
 package calculator.ast;
 
+import calculator.errors.EvaluationError;
 import calculator.interpreter.Environment;
 import calculator.interpreter.Interpreter;
-import misc.exceptions.NotYetImplementedException;
+import datastructures.concrete.DoubleLinkedList;
+import datastructures.interfaces.IList;
+
 
 /**
  * Note: this file is meant for the extra credit portion of this assignment
@@ -13,6 +16,7 @@ import misc.exceptions.NotYetImplementedException;
  * each new function inside the 'Calculator' class -- see line 59.
  */
 public class ControlFlowManipulators {
+    
     /**
      * Handles AST nodes corresponding to "randomlyPick(body1, body2)"
      *
@@ -48,6 +52,7 @@ public class ControlFlowManipulators {
      * Preconditions:
      *
      * - Receives an operation node with the name "if" and three children
+     * - e.g.) if(cond, -x, x), return -x if cond is non-zero number, return x if cond is zero.
      *
      * Postcondition:
      *
@@ -57,8 +62,19 @@ public class ControlFlowManipulators {
      * - In either case, return the result of whatever AST node you ended up interpreting.
      */
     public static AstNode handleIf(Environment env, AstNode wrapper) {
-        throw new NotYetImplementedException();
+        
+        AstNode cond = wrapper.getChildren().get(0);
+        AstNode body = wrapper.getChildren().get(1);
+        AstNode other = wrapper.getChildren().get(2);
+        Interpreter interp = env.getInterpreter();
+        
+        if (interp.evaluate(env,  cond).getNumericValue() != 0.0) {
+            return interp.evaluate(env, body);
+        } else { // when the number that condition is equal to 0
+            return interp.evaluate(env,other);
+        }
     }
+
 
     /**
      * Handles AST nodes corresponding to "repeat(times, body)"
@@ -68,13 +84,60 @@ public class ControlFlowManipulators {
      * - Receives an operation node with the name "repeat" and two children
      * - The 'times' AST node is assumed to be some arbitrary AST node that,
      *   when interpreted, will also produce an integer result.
+     *   -e.g) repeat(3, x + 3); when x is defined as 0 at first, it will return 9
      *
      * Postcondition:
      *
      * - Repeatedly evaluates the given body the specified number of times.
      * - Returns the result of interpreting 'body' for the final time.
      */
-    public static AstNode handleRepeat(Environment env, AstNode wrapper) {
-        throw new NotYetImplementedException();
+    public static AstNode handleRepeat(Environment env, AstNode wrapper) {        
+        AstNode times = wrapper.getChildren().get(0);
+        if (times.getNumericValue() < 1.0) {
+            throw new EvaluationError("invalid repitition");
+        }
+        AstNode body = wrapper.getChildren().get(1);
+        Interpreter interp = env.getInterpreter();
+        
+        AstNode result = body; 
+        int loopNum = (int) interp.evaluate(env,times).getNumericValue();
+        for (int i = 0; i < loopNum; i++) {
+            result = interp.evaluate(env, body); 
+        }
+        return (AstNode) interp.evaluate(env, result);
     }
+    
+    /**
+     * Handles AST nodes corresponding to while(cond, body, lim)
+     * 
+     * Precondition
+     * 
+     * - Receive an operation node with the name while and two children
+     *   
+     * Postcondition
+     * 
+     * - keep evaluating the given body until the given cond turns to be zero
+     * - if the loop goes over number that is given by lim, it breaks and throw an Evaluation Error
+     * - returns the result of interpreting body after the cond becomes false. 
+     */
+    public static AstNode handleWhile(Environment env, AstNode wrapper) {
+        AstNode cond = wrapper.getChildren().get(0);
+        AstNode body = wrapper.getChildren().get(1);
+        Interpreter interp = env.getInterpreter();
+        
+        double lim = interp.evaluate(env, wrapper.getChildren().get(0)).getNumericValue();
+        
+        int times = 0; 
+        AstNode result = body;
+        while (interp.evaluate(env, cond).getNumericValue() != 0) {
+            result = interp.evaluate(env, body); 
+            if (times > (int) lim) {
+                throw new EvaluationError("never ending loop");
+            }
+            times++;
+        }
+        return (AstNode) interp.evaluate(env, result);
+    }
+    
+    
 }
