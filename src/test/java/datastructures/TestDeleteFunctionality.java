@@ -105,12 +105,31 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
     }
     
     @Test(timeout=SECOND)
+    public void testDeleteMultiple() {
+        IList<String> list = this.makeBasicList();
+        list.add("d");
+        list.add("e");
+        list.add("f");
+        list.add("g");
+        list.add("h");
+        assertEquals("d", list.delete(3));
+        assertEquals("e", list.delete(3));
+        assertEquals("g", list.delete(4));
+        assertEquals("h", list.delete(4));
+        try {
+            list.contains("h"); // this verifies that the index was deleted
+        } catch (IndexOutOfBoundsException ex) {
+            // do nothing
+        }
+    }
+    
+    @Test(timeout=SECOND)
     public void testBackField() {
         IList<String> list = this.makeBasicList();
         int backIndex = list.size() - 1;
         assertEquals("c", list.delete(list.size() - 1));
         try {
-            list.delete(backIndex); // this varifies that the index was deleted
+            list.delete(backIndex); // this verifies that the index was deleted
             fail("Expected Out of Bounds Exception");
         } catch (IndexOutOfBoundsException ex) {
             // do nothing
@@ -118,6 +137,18 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         assertEquals("b", list.remove()); 
     }
     
+    @Test(timeout=SECOND)
+    public void testBackField2() {
+        IList<String> list = this.makeBasicList();
+        int backIndex = list.size() - 1;
+        assertEquals("c", list.delete(list.size() - 1));
+        try {
+            list.contains("c"); // this verifies that the index was deleted
+        } catch (IndexOutOfBoundsException ex) {
+            // do nothing
+        }
+        assertEquals("b", list.remove()); 
+    }
     @Test(timeout=SECOND)
     public void testNext() {
         IList<String> list = this.makeBasicList();
@@ -127,8 +158,8 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         list.add("f");
         list.add("g");
         list.add("h");
-        list.delete(4);
-        String[] arrList = new String[] {"a", "b", "c", "d", "f", "g", "h"};
+        list.delete(3);
+        String[] arrList = new String[] {"a", "b", "c", "e", "f", "g", "h"};
         for (int i = 0; i < list.size(); i++) {
             assertEquals(arrList[i], iter.next());
         }
