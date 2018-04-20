@@ -70,8 +70,7 @@ public class ControlFlowManipulators {
         AstNode body = wrapper.getChildren().get(1);
         AstNode other = wrapper.getChildren().get(2);
         
-        // cond does not need simplify syntax
-        
+        // cond does not need simplify syntax        
         cond = checkCond(env, cond.getChildren().get(0)); 
         
         if (cond.getNumericValue() != 0.0) {
@@ -150,7 +149,6 @@ public class ControlFlowManipulators {
             throw new EvaluationError("invalid repitition");
         }
         AstNode body = wrapper.getChildren().get(1);
-        String name = body.getName(); 
         AstNode result = body; 
         
         for (int i = 0; i < loopNum; i++) {
@@ -158,7 +156,7 @@ public class ControlFlowManipulators {
             System.out.println(result.getNumericValue());
             
         }
-        return (AstNode) interp.evaluate(env, result);
+        return interp.evaluate(env, result);
     }
     
     /**
