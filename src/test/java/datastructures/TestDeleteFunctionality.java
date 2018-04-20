@@ -116,20 +116,19 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
             // do nothing
         }
         assertEquals("b", list.remove()); 
-        // since remove always deletes from the back we check to make sure that back is set to b which would be the new back
     }
     
     @Test(timeout=SECOND)
     public void testNext() {
         IList<String> list = this.makeBasicList();
         Iterator<String> iter = list.iterator();
-        list.add("Joy");
-        list.add("Jong");
-        list.add("Tai Tea");
-        list.add("Tremaine");
-        list.add("Kim^2");
+        list.add("d");
+        list.add("e");
+        list.add("f");
+        list.add("g");
+        list.add("h");
         list.delete(4);
-        String[] arrList = new String[] {"a", "b", "c", "Joy", "Tai Tea", "Tremaine", "Kim^2"};
+        String[] arrList = new String[] {"a", "b", "c", "d", "f", "g", "h"};
         for (int i = 0; i < list.size(); i++) {
             assertEquals(arrList[i], iter.next());
         }
