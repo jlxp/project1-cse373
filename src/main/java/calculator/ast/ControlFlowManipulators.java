@@ -163,7 +163,11 @@ public class ControlFlowManipulators {
      * the leftest variable is the main variable that is returned
      */
     private static AstNode findVar(Environment env, AstNode body) {
-        if (body.isOperation()) {
+        if (body.isVariable()) {
+            return body;
+        } else if (body.isNumber()) {
+            return null;
+        } else {
             String name = body.getName();
             if (name.equals("+") || name.equals("-") || name.equals("*") || name.equals("/")
                     || name.equals("^")) {
@@ -183,22 +187,6 @@ public class ControlFlowManipulators {
             } else {
                 throw new EvaluationError("nope");
             }
-//            if (left.isVariable()) {
-//                return left; 
-//            } else if (right.isVariable()) {
-//                return right;
-//            } else if (left.isNumber() && right.isNumber()) {
-//                return null; // do nothing
-//            } else {
-//                left = findVar(env, left);
-//                right = findVar(env, right);
-//                
-//                return null; //fail to find
-//            }
-        } else if(body.isNumber()) {
-            return null;
-        } else {
-            return body;
         }
     }
 
