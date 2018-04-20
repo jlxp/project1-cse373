@@ -274,7 +274,7 @@ public class TestCalculator extends BaseTest {
     public void testRepeat() {
         Calculator calc = new Calculator();
         assertEquals("0", calc.evaluate("x := 0"));
-        assertEquals("9", calc.evaluate("repeat(3, x+3)"));
+        assertEquals("9", calc.evaluate("repeat(3, 2*x+3)"));
     }
 
     private static class FakeImageDrawer extends ImageDrawer {

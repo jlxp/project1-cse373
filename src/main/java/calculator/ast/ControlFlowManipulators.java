@@ -150,15 +150,39 @@ public class ControlFlowManipulators {
         }
         AstNode body = wrapper.getChildren().get(1);
         AstNode result = body; 
+        String var = findVar(env, body.getChildren().get(0)).getName(); 
         
         for (int i = 0; i < loopNum; i++) {
             result = interp.evaluate(env, body);
-            System.out.println(result.getNumericValue());
-            
+            env.getVariables().put(var, result);
+            System.out.println(result.getNumericValue());           
         }
         return interp.evaluate(env, result);
     }
-    
+    /*
+     * the leftest variable is the main variable that is returned
+     */
+    private static AstNode findVar(Environment env, AstNode body) {
+        if(body.isOperation()) {
+            AstNode left = body.getChildren().get(0);
+            AstNode right = body.getChildren().get(1);
+            
+            if(left.isVariable()) {
+                return left; 
+            } else if (right.isVariable()) {
+                return right;
+            } else if (left.isNumber() && right.isNumber()) {
+                return null; // do nothing
+            } else {
+                left = findVar(env, left);
+                right = findVar(env, right);
+                
+                return null; //fail to find
+            }
+        }
+        return null;
+    }
+
     /**
      * Handles AST nodes corresponding to while(cond, body, lim)
      * 
@@ -177,17 +201,18 @@ public class ControlFlowManipulators {
         AstNode body = wrapper.getChildren().get(1);
         Interpreter interp = env.getInterpreter();
         
-        cond = checkCond(env, cond.getChildren().get(0));
+        AstNode currentCond = checkCond(env, cond.getChildren().get(0));
         
         double lim = interp.evaluate(env, wrapper.getChildren().get(0)).getNumericValue();
         
         int times = 0; 
         AstNode result = body;
-        while (interp.evaluate(env, cond).getNumericValue() != 0) {
+        while (currentCond.getNumericValue() != 0.0) {
             result = interp.evaluate(env, body); 
             if (times > (int) lim) {
                 throw new EvaluationError("never ending loop");
             }
+            currentCond = checkCond(env, cond.getChildren().get(0));
             times++;
         }
         return (AstNode) interp.evaluate(env, result);
