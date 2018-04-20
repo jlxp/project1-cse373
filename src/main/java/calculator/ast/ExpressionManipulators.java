@@ -89,7 +89,7 @@ public class ExpressionManipulators {
     }
 
     /*
-     * Returns the result of basic trigonometry operations sin and cos
+     * Returns the result of basic trigonometry operations sin and cos and negate
      */
     private static double trigHelper(String name, double value) {
         if (name.equals("sin")) {

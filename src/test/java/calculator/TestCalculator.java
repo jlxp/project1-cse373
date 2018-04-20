@@ -260,6 +260,22 @@ public class TestCalculator extends BaseTest {
             // Do nothing
         }
     }
+    
+    @Test(timeout=SECOND)
+    public void testIf() {
+        Calculator calc = new Calculator();
+        assertEquals("3", calc.evaluate("x := 3"));
+
+        assertEquals("4", calc.evaluate("y := 4"));
+        assertEquals("10", calc.evaluate("if(sm(x,0), 10, 0)"));
+    }
+    
+    @Test(timeout=SECOND)
+    public void testRepeat() {
+        Calculator calc = new Calculator();
+        assertEquals("0", calc.evaluate("x := 0"));
+        assertEquals("9", calc.evaluate("repeat(3, x+3)"));
+    }
 
     private static class FakeImageDrawer extends ImageDrawer {
         public IList<Double> lastXValues;

@@ -52,7 +52,8 @@ public class ControlFlowManipulators {
      * Preconditions:
      *
      * - Receives an operation node with the name "if" and three children
-     * - e.g.) if(cond, -x, x), return -x if cond is non-zero number, return x if cond is zero.
+     * - syntax for cond is gr for greater than (>), sm for smaller than (<), eq for equal (=), nq for not equal (!=)
+     * - e.g.) if(sm(x,0), -x, x) gives -x when x is smaller than 0, x if elsewhere. 
      *
      * Postcondition:
      *
@@ -62,16 +63,60 @@ public class ControlFlowManipulators {
      * - In either case, return the result of whatever AST node you ended up interpreting.
      */
     public static AstNode handleIf(Environment env, AstNode wrapper) {
+
+        Interpreter interp = env.getInterpreter();
         
         AstNode cond = wrapper.getChildren().get(0);
         AstNode body = wrapper.getChildren().get(1);
         AstNode other = wrapper.getChildren().get(2);
-        Interpreter interp = env.getInterpreter();
         
-        if (interp.evaluate(env,  cond).getNumericValue() != 0.0) {
+        // cond does not need simplify syntax
+        cond = cond.getChildren().get(0);
+                
+        System.out.println(body.getName());
+        String condName = cond.getName();
+        System.out.println(condName);
+        
+        AstNode left = cond.getChildren().get(0); 
+        System.out.println(left.getName());
+        IList<AstNode> leftList = new DoubleLinkedList<>();
+        leftList.add(left);
+        left = new AstNode("toDouble", leftList); 
+        
+        AstNode right = cond.getChildren().get(1); 
+        IList<AstNode> rightList = new DoubleLinkedList<>();
+        rightList.add(right);
+        right = new AstNode("toDouble", rightList); 
+        
+        double condLeft = interp.evaluate(env, left).getNumericValue();
+        double condRight = interp.evaluate(env, right).getNumericValue();
+        
+        if (condName.equals("gr")) {
+            if (condLeft > condRight) {
+                cond = new AstNode(condLeft - condRight);
+            } else {
+                cond = new AstNode(0);
+            }            
+        } else if (condName.equals("sm")) {
+            if (condLeft < condRight) {
+                cond = new AstNode(condRight - condLeft);
+            } else {
+                cond = new AstNode(0);
+            }  
+        } else if (condName.equals("eq")) {
+            if (condLeft == condRight) {
+                cond = new AstNode(1);
+            } else {
+                cond = new AstNode(0);
+            }
+        } else { // for not equal
+            cond = new AstNode(condLeft - condRight);
+        }
+        
+        if (cond.getNumericValue() != 0.0) {
             return interp.evaluate(env, body);
         } else { // when the number that condition is equal to 0
-            return interp.evaluate(env,other);
+            return interp.evaluate(env, other);
         }
     }
 
@@ -93,16 +138,19 @@ public class ControlFlowManipulators {
      */
     public static AstNode handleRepeat(Environment env, AstNode wrapper) {        
         AstNode times = wrapper.getChildren().get(0);
-        if (times.getNumericValue() < 1.0) {
+        Interpreter interp = env.getInterpreter();
+        int loopNum = (int) interp.evaluate(env, times).getNumericValue();
+        if (loopNum < 1.0) {
             throw new EvaluationError("invalid repitition");
         }
         AstNode body = wrapper.getChildren().get(1);
-        Interpreter interp = env.getInterpreter();
-        
+        String name = body.getName(); 
         AstNode result = body; 
-        int loopNum = (int) interp.evaluate(env,times).getNumericValue();
+        
         for (int i = 0; i < loopNum; i++) {
-            result = interp.evaluate(env, body); 
+            result = interp.evaluate(env, body);
+            System.out.println(result.getNumericValue());
+            
         }
         return (AstNode) interp.evaluate(env, result);
     }
