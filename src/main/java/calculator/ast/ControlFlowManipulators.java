@@ -163,24 +163,43 @@ public class ControlFlowManipulators {
      * the leftest variable is the main variable that is returned
      */
     private static AstNode findVar(Environment env, AstNode body) {
-        if(body.isOperation()) {
-            AstNode left = body.getChildren().get(0);
-            AstNode right = body.getChildren().get(1);
-            
-            if(left.isVariable()) {
-                return left; 
-            } else if (right.isVariable()) {
-                return right;
-            } else if (left.isNumber() && right.isNumber()) {
-                return null; // do nothing
-            } else {
-                left = findVar(env, left);
-                right = findVar(env, right);
+        if (body.isOperation()) {
+            String name = body.getName();
+            if (name.equals("+") || name.equals("-") || name.equals("*") || name.equals("/")
+                    || name.equals("^")) {
+                AstNode left = body.getChildren().get(0);
+                AstNode right = body.getChildren().get(1);
                 
-                return null; //fail to find
+                left = findVar(env,left);
+                right =  findVar(env,right);
+                if(left != null) {
+                    return left;
+                } else if (right != null) {
+                    return right;
+                }
+                return null; 
+            } else if (name.equals("sin") || name.equals("cos") || name.equals("negate")) {
+                    return findVar(env, body.getChildren().get(0));
+            } else {
+                throw new EvaluationError("nope");
             }
+//            if (left.isVariable()) {
+//                return left; 
+//            } else if (right.isVariable()) {
+//                return right;
+//            } else if (left.isNumber() && right.isNumber()) {
+//                return null; // do nothing
+//            } else {
+//                left = findVar(env, left);
+//                right = findVar(env, right);
+//                
+//                return null; //fail to find
+//            }
+        } else if(body.isNumber()) {
+            return null;
+        } else {
+            return body;
         }
-        return null;
     }
 
     /**
