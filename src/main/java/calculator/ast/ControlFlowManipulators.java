@@ -174,9 +174,9 @@ public class ControlFlowManipulators {
                 AstNode left = body.getChildren().get(0);
                 AstNode right = body.getChildren().get(1);
                 
-                left = findVar(env,left);
-                right =  findVar(env,right);
-                if(left != null) {
+                left = findVar(env, left);
+                right =  findVar(env, right);
+                if (left != null) {
                     return left;
                 } else if (right != null) {
                     return right;
