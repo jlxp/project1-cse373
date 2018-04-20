@@ -267,7 +267,7 @@ public class TestCalculator extends BaseTest {
         assertEquals("3", calc.evaluate("x := 3"));
 
         assertEquals("4", calc.evaluate("y := 4"));
-        assertEquals("10", calc.evaluate("if(sm(x,0), 10, 0)"));
+        assertEquals("0", calc.evaluate("if(sm(x,0), 10, 0)"));
     }
     
     @Test(timeout=SECOND)
