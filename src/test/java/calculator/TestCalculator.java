@@ -281,7 +281,13 @@ public class TestCalculator extends BaseTest {
         assertEquals("0", calc.evaluate("x := 0"));
         assertEquals("9", calc.evaluate("repeat(3,3+1*x)"));
     }
-
+    
+    @Test(timeout=SECOND)
+    public void testWhile() {
+        Calculator calc = new Calculator();
+        assertEquals("0", calc.evaluate("x := 0"));
+        assertEquals("9", calc.evaluate("while(sm(x+1,10), x+1, 100)"));
+    }
     private static class FakeImageDrawer extends ImageDrawer {
         public IList<Double> lastXValues;
         public IList<Double> lastYValues;

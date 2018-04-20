@@ -154,13 +154,12 @@ public class ControlFlowManipulators {
         
         for (int i = 0; i < loopNum; i++) {
             result = interp.evaluate(env, body);
-            env.getVariables().put(var, result);
-            System.out.println(result.getNumericValue());           
+            env.getVariables().put(var, result);          
         }
         return interp.evaluate(env, result);
     }
     /*
-     * the leftest variable is the main variable that is returned
+     * return the most left variable which is the main variable
      */
     private static AstNode findVar(Environment env, AstNode body) {
         if (body.isVariable()) {
@@ -182,7 +181,8 @@ public class ControlFlowManipulators {
                     return right;
                 }
                 return null; 
-            } else if (name.equals("sin") || name.equals("cos") || name.equals("negate")) {
+            } else if (name.equals("sin") || name.equals("cos") || name.equals("negate")
+                    || name.equals("sm") || name.equals("gr") || name.equals("eq") || name.equals("nq")) {
                     return findVar(env, body.getChildren().get(0));
             } else {
                 throw new EvaluationError("nope");
@@ -196,6 +196,7 @@ public class ControlFlowManipulators {
      * Precondition
      * 
      * - Receive an operation node with the name while and two children
+     * - e.g: while(sm(x,10), x+1, 100), and x = 0, it will return 10 with 10 steps
      *   
      * Postcondition
      * 
@@ -207,20 +208,27 @@ public class ControlFlowManipulators {
         AstNode cond = wrapper.getChildren().get(0);
         AstNode body = wrapper.getChildren().get(1);
         Interpreter interp = env.getInterpreter();
+        String condVar = findVar(env, cond.getChildren().get(0)).getName();
         
         AstNode currentCond = checkCond(env, cond.getChildren().get(0));
         
-        double lim = interp.evaluate(env, wrapper.getChildren().get(0)).getNumericValue();
+        double lim = interp.evaluate(env, wrapper.getChildren().get(2)).getNumericValue();
         
-        int times = 0; 
+        int step = 0; 
         AstNode result = body;
+        String var = findVar(env, body.getChildren().get(0)).getName();
+        
         while (currentCond.getNumericValue() != 0.0) {
             result = interp.evaluate(env, body); 
-            if (times > (int) lim) {
-                throw new EvaluationError("never ending loop");
+            env.getVariables().put(var, result);  
+            if (step > lim) {
+                throw new EvaluationError("too long loop");
             }
-            currentCond = checkCond(env, cond.getChildren().get(0));
-            times++;
+            currentCond = checkCond(env, cond.getChildren().get(0));            
+            if (!var.equals(condVar)) {
+                env.getVariables().put(condVar, currentCond); 
+            }
+            step++;
         }
         return (AstNode) interp.evaluate(env, result);
     }
